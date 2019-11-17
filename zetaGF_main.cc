@@ -7,7 +7,7 @@
 
 zgfGaugeField gaugeField;
 zgfGaugeField aField;
-zgfGaugeField deltaField;
+zgfGaugeMatrix deltaField[Nt][Nz][Ny][Nx];
 
 int main(int argc, char *argv[])
 {
@@ -15,12 +15,14 @@ int main(int argc, char *argv[])
 
   StartTime(1);
   zgfGenAField(&(aField[0][0][0][0][0]), &(gaugeField[0][0][0][0][0]));
+  zgfGenDeltaField(&(deltaField[0][0][0][0]), &(aField[0][0][0][0][0]));
   StopTime(1);
   StartTime(2);
-  zgfGenDeltaField(&(deltaField[0][0][0][0][0]), &(aField[0][0][0][0][0]));
+  double theta = zgfGetTheta(&(deltaField[0][0][0][0]));
   StopTime(2);
-  PrintTime(1, "AField");
-  PrintTime(2, "DeltaField");
+  printf("%le\n", theta);
+  PrintTime(1, "DeltaField");
+  PrintTime(2, "Theta");
   // printf("%le\n", zgfGaugeMatrixTrace(aField[0][0][0][0][0]) - zgfGaugeMatrixTrace(aField[Nt - 1][0][0][0][0]));
   // printf("%le\n", zgfGaugeMatrixTrace(deltaField[0][0][0][0][0]));
   // printf("%le\n", aField[0][0][0][0][0].c11.re - aField[Nt - 1][0][0][0][0].c11.re);

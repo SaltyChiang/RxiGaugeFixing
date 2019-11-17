@@ -7,7 +7,7 @@
 #define Nx Ns
 #define Ny Ns
 #define Nz Ns
-#define V Nt *Nz *Ny *Nx
+#define V (Nt * Nz * Ny * Nx)
 #define PREC double
 #define kappa 0.135
 #define beta 0.1
@@ -26,5 +26,3 @@ typedef struct
 } zgfGaugeMatrix;
 
 typedef zgfGaugeMatrix zgfGaugeField[Nt][Nz][Ny][Nx][Nd];
-
-extern zgfGaugeField deltaField;
