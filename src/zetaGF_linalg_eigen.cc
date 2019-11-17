@@ -89,6 +89,7 @@ void zgfGenGaugeRotateField_eigen(zgfGaugeMatrix *grf, zgfGaugeMatrix *kf)
   for (int i = 0; i < VOL; i++)
   {
     grfEigen[i] = kfEigen[i] / sqrt(kfEigen[i].determinant());
+    grfEigen[i] = grfEigen[i] * grfEigen[i];
   }
 }
 
