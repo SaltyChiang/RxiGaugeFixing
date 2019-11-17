@@ -60,16 +60,16 @@ zgfGaugeMatrix operator*(zgfGaugeMatrix a, zgfGaugeMatrix b)
 double operator~(zgfGaugeMatrix a)
 {
   double c = 0.0;
-  c += pow(a.c11.re, 2) + pow(a.c12.re, 2) + pow(a.c13.re, 2) - pow(a.c11.im, 2) - pow(a.c12.im, 2) - pow(a.c13.im, 2);
-  c += pow(a.c21.re, 2) + pow(a.c22.re, 2) + pow(a.c23.re, 2) - pow(a.c21.im, 2) - pow(a.c22.im, 2) - pow(a.c23.im, 2);
-  c += pow(a.c31.re, 2) + pow(a.c32.re, 2) + pow(a.c33.re, 2) - pow(a.c31.im, 2) - pow(a.c32.im, 2) - pow(a.c33.im, 2);
+  c += pow(a.c11.re, 2) + pow(a.c12.re, 2) + pow(a.c13.re, 2) + pow(a.c11.im, 2) + pow(a.c12.im, 2) + pow(a.c13.im, 2);
+  c += pow(a.c21.re, 2) + pow(a.c22.re, 2) + pow(a.c23.re, 2) + pow(a.c21.im, 2) + pow(a.c22.im, 2) + pow(a.c23.im, 2);
+  c += pow(a.c31.re, 2) + pow(a.c32.re, 2) + pow(a.c33.re, 2) + pow(a.c31.im, 2) + pow(a.c32.im, 2) + pow(a.c33.im, 2);
   return c;
 }
 
 void zgfGenAField(zgfGaugeMatrix *af, zgfGaugeMatrix *gf)
 {
 #pragma omp parallel for
-  for (int i = 0; i < V * Nd; i++)
+  for (int i = 0; i < VOL * Nd; i++)
   {
     double tr = (gf[i].c11.im + gf[i].c22.im + gf[i].c33.im) / 3;
     af[i].c11.im = 0.0;
@@ -98,7 +98,7 @@ void zgfGenAField(zgfGaugeMatrix *af, zgfGaugeMatrix *gf)
 void zgfGenDeltaField(zgfGaugeMatrix *df, zgfGaugeMatrix *af)
 {
 #pragma omp parallel for
-  for (int i = 0; i < V; i++)
+  for (int i = 0; i < VOL; i++)
   {
     int t = i / (Nz * Ny * Nz);
     int z = i % (Nz * Ny * Nx) / (Ny * Nx);
@@ -115,29 +115,16 @@ void zgfGenDeltaField(zgfGaugeMatrix *df, zgfGaugeMatrix *af)
 
 void zgfGenKField(zgfGaugeMatrix *kf, zgfGaugeMatrix *gf, zgfGaugeMatrix *grf)
 {
-  for (int i = 0; i < V; i++)
-  {
-    int t = i / (Nz * Ny * Nz);
-    int z = i % (Nz * Ny * Nx) / (Ny * Nx);
-    int y = i % (Ny * Nx) / (Nx);
-    int x = i % (Nx);
-    int jt = i + (t == 0 ? (Nt - 1) : -1) * Nz * Ny * Nx;
-    int jz = i + (z == 0 ? (Nz - 1) : -1) * Ny * Nx;
-    int jy = i + (y == 0 ? (Ny - 1) : -1) * Nx;
-    int jx = i + (x == 0 ? (Nx - 1) : -1);
-
-    kf[i] = kf[i * Nd] + kf[i * Nd + 1] + kf[i * Nd + 2] + kf[i * Nd + 3] - kf[jt * 4 + 3] - kf[jz * Nd + 2] - kf[jy * Nd + 1] - kf[jx * Nd];
-  }
 }
 
 double zgfGetTheta(zgfGaugeMatrix *df)
 {
   double *theta;
-  theta = (double *)malloc(V * sizeof(double));
+  theta = (double *)malloc(VOL * sizeof(double));
 #pragma omp parallel for
-  for (int i = 0; i < V; i++)
+  for (int i = 0; i < VOL; i++)
     theta[i] = ~(df[i]);
-  for (int i = 1; i < V; i++)
+  for (int i = 1; i < VOL; i++)
     theta[0] += theta[i];
-  return theta[0] / Nc / V;
+  return theta[0] / Nc / VOL;
 }

@@ -47,11 +47,11 @@ int zgfReadConf(zgfGaugeMatrix *gf, char *fn)
   FILE *fp = fopen(fn, "rb");
 #endif
   PREC *ptr = &(gf[0].c11.re);
-  fread((void *)ptr, 2 * precision, V * Nd * Nc * Nc, fp);
+  fread((void *)ptr, 2 * precision, VOL * Nd * Nc * Nc, fp);
 
   if (swapEdian)
 #pragma omp parallel for
-    for (int i = 0; i < V * Nd * Nc * Nc * 2; i++)
+    for (int i = 0; i < VOL * Nd * Nc * Nc * 2; i++)
       ptr[i] = zgfSwapOrder(&(ptr[i]));
 
   fclose(fp);
@@ -67,7 +67,7 @@ int zgfWriteConf(zgfGaugeMatrix *gf, char *fn)
   FILE *fp = fopen(fn, "wb+");
 #endif
   void *ptr = (void *)&(gf[0].c11.re);
-  fwrite(ptr, sizeof(zgfComplex), V * Nd * Nc * Nc, fp);
+  fwrite(ptr, sizeof(zgfComplex), VOL * Nd * Nc * Nc, fp);
 
   fclose(fp);
   return 1;

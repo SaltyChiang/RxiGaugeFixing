@@ -7,11 +7,11 @@
 #define Nx Ns
 #define Ny Ns
 #define Nz Ns
-#define V (Nt * Nz * Ny * Nx)
+#define VOL (Nt * Nz * Ny * Nx)
 #define PREC double
-#define kappa 0.135
-#define beta 0.1
-#define g0 sqrt(2 * Nc / beta)
+#define zgfKappa 0.135
+#define zgfBeta 0.1
+#define zgfG0 sqrt(2 * Nc / beta)
 
 typedef struct
 {
@@ -24,5 +24,3 @@ typedef struct
   zgfComplex c21, c22, c23;
   zgfComplex c31, c32, c33;
 } zgfGaugeMatrix;
-
-typedef zgfGaugeMatrix zgfGaugeField[Nt][Nz][Ny][Nx][Nd];
