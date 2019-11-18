@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstdlib>
 
 #include "include/zetaGF_time.h"
 #include "include/zetaGF_time_chrono.h"
@@ -21,6 +22,7 @@ int main(int argc, char *argv[])
   gaugeRotateField = (zgfGaugeMatrix *)malloc(sizeof(zgfGaugeMatrix) * VOL);
   kField = (zgfGaugeMatrix *)malloc(sizeof(zgfGaugeMatrix) * VOL);
   zgfReadConf(gaugeField, new char[15]{"data/conf.data"});
+  printf("???\n");
 
   StartTimeChrono(1);
   zgfGenAField_eigen(aField, gaugeField);

@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "*.vpy": "python",
-        "*.cu": "cpp",
-        "*.cuh": "cpp",
-        "complex": "cpp"
-    }
-}
