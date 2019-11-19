@@ -1,4 +1,4 @@
-#include <cstdlib>
+#include <cmath>
 
 #include "../include/zetaGF_lattice.h"
 #include "../include/zetaGF_linalg.h"

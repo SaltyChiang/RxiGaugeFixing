@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstdlib>
 
 #include "include/zetaGF_macro.h"
 #include "include/zetaGF_lattice.h"
@@ -20,6 +21,7 @@ int main(int argc, char *argv[])
   gaugeRotateField = zgfMalloc(zgfColorMatrix, VOL);
   kField = zgfMalloc(zgfColorMatrix, VOL);
   zgfReadConf(gaugeField, new char[15]{"data/conf.data"});
+  printf("???\n");
 
   StartTimeChrono(1);
   zgfGenAField_eigen(aField, gaugeField);
