@@ -5,7 +5,7 @@
 #include "../include/zetaGF_linalg.h"
 #include "../extension/Eigen/Dense"
 
-void zgfGenAField_eigen(zgfGaugeMatrix *af, zgfGaugeMatrix *gf)
+void zgfGenAField_eigen(zgfColorMatrix *af, zgfColorMatrix *gf)
 {
   Eigen::Matrix3cd *afEigen = (Eigen::Matrix3cd *)af;
   Eigen::Matrix3cd *gfEigen = (Eigen::Matrix3cd *)gf;
@@ -18,7 +18,7 @@ void zgfGenAField_eigen(zgfGaugeMatrix *af, zgfGaugeMatrix *gf)
   }
 }
 
-void zgfGenDeltaField_eigen(zgfGaugeMatrix *df, zgfGaugeMatrix *af)
+void zgfGenDeltaField_eigen(zgfColorMatrix *df, zgfColorMatrix *af)
 {
   Eigen::Matrix3cd *dfEigen = (Eigen::Matrix3cd *)df;
   Eigen::Matrix3cd *afEigen = (Eigen::Matrix3cd *)af;
@@ -41,7 +41,7 @@ void zgfGenDeltaField_eigen(zgfGaugeMatrix *df, zgfGaugeMatrix *af)
   }
 }
 
-void zgfInitGaugeRotateField_eigen(zgfGaugeMatrix *grf)
+void zgfInitGaugeRotateField_eigen(zgfColorMatrix *grf)
 {
   Eigen::Matrix3cd *grfEigen = (Eigen::Matrix3cd *)grf;
 #pragma omp parallel for
@@ -49,7 +49,7 @@ void zgfInitGaugeRotateField_eigen(zgfGaugeMatrix *grf)
     grfEigen[i] = Eigen::Matrix3cd::Identity();
 }
 
-void zgfGenKField_eigen(zgfGaugeMatrix *kf, zgfGaugeMatrix *gf, zgfGaugeMatrix *grf)
+void zgfGenKField_eigen(zgfColorMatrix *kf, zgfColorMatrix *gf, zgfColorMatrix *grf)
 {
   Eigen::Matrix3cd *kfEigen = (Eigen::Matrix3cd *)kf;
   Eigen::Matrix3cd *gfEigen = (Eigen::Matrix3cd *)gf;
@@ -81,7 +81,7 @@ void zgfGenKField_eigen(zgfGaugeMatrix *kf, zgfGaugeMatrix *gf, zgfGaugeMatrix *
   }
 }
 
-void zgfGenGaugeRotateField_eigen(zgfGaugeMatrix *grf, zgfGaugeMatrix *kf)
+void zgfGenGaugeRotateField_eigen(zgfColorMatrix *grf, zgfColorMatrix *kf)
 {
   Eigen::Matrix3cd *grfEigen = (Eigen::Matrix3cd *)grf;
   Eigen::Matrix3cd *kfEigen = (Eigen::Matrix3cd *)kf;
@@ -93,7 +93,7 @@ void zgfGenGaugeRotateField_eigen(zgfGaugeMatrix *grf, zgfGaugeMatrix *kf)
   }
 }
 
-void zgfUpdateGaugeField_eigen(zgfGaugeMatrix *gf, zgfGaugeMatrix *grf)
+void zgfUpdateGaugeField_eigen(zgfColorMatrix *gf, zgfColorMatrix *grf)
 {
   Eigen::Matrix3cd *gfEigen = (Eigen::Matrix3cd *)gf;
   Eigen::Matrix3cd *grfEigen = (Eigen::Matrix3cd *)grf;
@@ -120,7 +120,7 @@ void zgfUpdateGaugeField_eigen(zgfGaugeMatrix *gf, zgfGaugeMatrix *grf)
   }
 }
 
-double zgfGetTheta_eigen(zgfGaugeMatrix *df)
+double zgfGetTheta_eigen(zgfColorMatrix *df)
 {
   Eigen::Matrix3cd *dfEigen = (Eigen::Matrix3cd *)df;
   double *theta;

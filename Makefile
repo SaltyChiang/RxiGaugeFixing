@@ -9,7 +9,7 @@ all : bin/zetaGF.exe
 
 SRC = $(wildcard src/*.cc)
 OBJ = $(patsubst %.cc, bin/%.o, $(notdir $(SRC)))
-INC = include/zetaGF_lattice.h include/zetaGF_time.h include/zetaGF_time_chrono.h
+INC = include/zetaGF_lattice.h include/zetaGF_macro.h
 
 $(OBJ) : bin/%.o : src/%.cc include/%.h $(INC)
 	$(CXX) $(CXXFLAGS) -c $< -o $@

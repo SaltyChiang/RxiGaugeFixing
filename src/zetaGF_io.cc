@@ -38,7 +38,7 @@ PREC zgfSwapOrder(PREC *buffer)
   return *(PREC *)bufferOut;
 }
 
-int zgfReadConf(zgfGaugeMatrix *gf, char *fn)
+int zgfReadConf(zgfColorMatrix *gf, char *fn)
 {
 #ifdef _WIN32
   FILE *fp;
@@ -46,7 +46,7 @@ int zgfReadConf(zgfGaugeMatrix *gf, char *fn)
 #else
   FILE *fp = fopen(fn, "rb");
 #endif
-  PREC *ptr = &(gf[0].c11.re);
+  PREC *ptr = (PREC *)gf;
   fread((void *)ptr, 2 * precision, VOL * Nd * Nc * Nc, fp);
 
   if (swapEdian)
@@ -58,7 +58,7 @@ int zgfReadConf(zgfGaugeMatrix *gf, char *fn)
   return 1;
 }
 
-int zgfWriteConf(zgfGaugeMatrix *gf, char *fn)
+int zgfWriteConf(zgfColorMatrix *gf, char *fn)
 {
 #ifdef _WIN32
   FILE *fp;
@@ -66,7 +66,7 @@ int zgfWriteConf(zgfGaugeMatrix *gf, char *fn)
 #else
   FILE *fp = fopen(fn, "wb+");
 #endif
-  void *ptr = (void *)&(gf[0].c11.re);
+  void *ptr = (void *)gf;
   fwrite(ptr, sizeof(zgfComplex), VOL * Nd * Nc * Nc, fp);
 
   fclose(fp);

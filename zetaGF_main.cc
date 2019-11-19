@@ -1,25 +1,24 @@
 #include <cstdio>
 
-#include "include/zetaGF_time.h"
-#include "include/zetaGF_time_chrono.h"
+#include "include/zetaGF_macro.h"
 #include "include/zetaGF_lattice.h"
 #include "include/zetaGF_io.h"
 #include "include/zetaGF_linalg.h"
 #include "include/zetaGF_linalg_eigen.h"
 
-zgfGaugeMatrix *gaugeField;
-zgfGaugeMatrix *aField;
-zgfGaugeMatrix *deltaField;
-zgfGaugeMatrix *gaugeRotateField;
-zgfGaugeMatrix *kField;
+zgfColorMatrix *gaugeField;
+zgfColorMatrix *aField;
+zgfColorMatrix *deltaField;
+zgfColorMatrix *gaugeRotateField;
+zgfColorMatrix *kField;
 
 int main(int argc, char *argv[])
 {
-  gaugeField = (zgfGaugeMatrix *)malloc(sizeof(zgfGaugeMatrix) * VOL * Nd);
-  aField = (zgfGaugeMatrix *)malloc(sizeof(zgfGaugeMatrix) * VOL * Nd);
-  deltaField = (zgfGaugeMatrix *)malloc(sizeof(zgfGaugeMatrix) * VOL);
-  gaugeRotateField = (zgfGaugeMatrix *)malloc(sizeof(zgfGaugeMatrix) * VOL);
-  kField = (zgfGaugeMatrix *)malloc(sizeof(zgfGaugeMatrix) * VOL);
+  gaugeField = zgfMalloc(zgfColorMatrix, VOL * Nd);
+  aField = zgfMalloc(zgfColorMatrix, VOL * Nd);
+  deltaField = zgfMalloc(zgfColorMatrix, VOL);
+  gaugeRotateField = zgfMalloc(zgfColorMatrix, VOL);
+  kField = zgfMalloc(zgfColorMatrix, VOL);
   zgfReadConf(gaugeField, new char[15]{"data/conf.data"});
 
   StartTimeChrono(1);

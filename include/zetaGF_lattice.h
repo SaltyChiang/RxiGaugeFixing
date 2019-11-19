@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../extension/Eigen/Core"
+
 #define Nc 3
 #define Nd 4
 #define Nt 32
@@ -24,3 +26,5 @@ typedef struct
   zgfComplex c21, c22, c23;
   zgfComplex c31, c32, c33;
 } zgfGaugeMatrix;
+
+typedef Eigen::Matrix<Eigen::dcomplex, Nc, Nc> zgfColorMatrix;
