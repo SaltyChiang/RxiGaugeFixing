@@ -2,5 +2,10 @@
 
 #include "zetaGF_lattice.h"
 
-int zgfReadConf(zgfColorMatrix *gf, char *fn);
-int zgfWriteConf(zgfColorMatrix *gf, char *fn);
+namespace ZetaGF
+{
+
+int ReadConf(ColorMatrix *gf, char *fn);
+int WriteConf(ColorMatrix *gf, char *fn);
+
+} // namespace ZetaGaugeFixing

@@ -2,7 +2,12 @@
 
 #include "zetaGF_lattice.h"
 
-void zgfGenAField(zgfGaugeMatrix *af, zgfGaugeMatrix *gf);
-void zgfGenDeltaField(zgfGaugeMatrix *df, zgfGaugeMatrix *af);
-void zgfGenKField(zgfGaugeMatrix *af, zgfGaugeMatrix *gf, zgfGaugeMatrix *grf);
-double zgfGetTheta(zgfGaugeMatrix *df);
+namespace ZetaGF
+{
+
+void GenAField(GaugeMatrix *af, GaugeMatrix *gf);
+void GenDeltaField(GaugeMatrix *df, GaugeMatrix *af);
+void GenKField(GaugeMatrix *af, GaugeMatrix *gf, GaugeMatrix *grf);
+double GetTheta(GaugeMatrix *df);
+
+} // namespace ZetaGaugeFixing

@@ -3,61 +3,64 @@
 #include "../include/zetaGF_lattice.h"
 #include "../include/zetaGF_linalg.h"
 
-zgfComplex operator+(zgfComplex a, zgfComplex b)
+namespace ZetaGF
 {
-  zgfComplex c;
+
+Complex operator+(Complex a, Complex b)
+{
+  Complex c;
   c.re = a.re + b.re;
   c.im = a.im + b.im;
   return c;
 }
 
-zgfComplex operator-(zgfComplex a, zgfComplex b)
+Complex operator-(Complex a, Complex b)
 {
-  zgfComplex c;
+  Complex c;
   c.re = a.re - b.re;
   c.im = a.im - b.im;
   return c;
 }
 
-zgfComplex operator*(zgfComplex a, zgfComplex b)
+Complex operator*(Complex a, Complex b)
 {
-  zgfComplex c;
+  Complex c;
   c.re = a.re * b.re - a.im * b.im;
   c.im = a.re + b.im + a.im * b.re;
   return c;
 }
 
-zgfGaugeMatrix operator+(zgfGaugeMatrix a, zgfGaugeMatrix b)
+GaugeMatrix operator+(GaugeMatrix a, GaugeMatrix b)
 {
-  PREC *cFloat = (PREC *)malloc(sizeof(zgfGaugeMatrix));
+  PREC *cFloat = (PREC *)malloc(sizeof(GaugeMatrix));
   PREC *aFloat = (PREC *)&a;
   PREC *bFloat = (PREC *)&b;
   for (int i = 0; i < Nc * Nc * 2; i++)
     cFloat[i] = aFloat[i] + bFloat[i];
-  return *(zgfGaugeMatrix *)cFloat;
+  return *(GaugeMatrix *)cFloat;
 }
 
-zgfGaugeMatrix operator-(zgfGaugeMatrix a, zgfGaugeMatrix b)
+GaugeMatrix operator-(GaugeMatrix a, GaugeMatrix b)
 {
-  PREC *cFloat = (PREC *)malloc(sizeof(zgfGaugeMatrix));
+  PREC *cFloat = (PREC *)malloc(sizeof(GaugeMatrix));
   PREC *aFloat = (PREC *)&a;
   PREC *bFloat = (PREC *)&b;
   for (int i = 0; i < Nc * Nc * 2; i++)
     cFloat[i] = aFloat[i] - bFloat[i];
-  return *(zgfGaugeMatrix *)cFloat;
+  return *(GaugeMatrix *)cFloat;
 }
 
-zgfGaugeMatrix operator*(zgfGaugeMatrix a, zgfGaugeMatrix b)
+GaugeMatrix operator*(GaugeMatrix a, GaugeMatrix b)
 {
-  PREC *cFloat = (PREC *)malloc(sizeof(zgfGaugeMatrix));
+  PREC *cFloat = (PREC *)malloc(sizeof(GaugeMatrix));
   PREC *aFloat = (PREC *)&a;
   PREC *bFloat = (PREC *)&b;
   for (int i = 0; i < Nc * Nc * 2; i++)
     cFloat[i] = aFloat[i] - bFloat[i];
-  return *(zgfGaugeMatrix *)cFloat;
+  return *(GaugeMatrix *)cFloat;
 }
 
-double operator~(zgfGaugeMatrix a)
+double operator~(GaugeMatrix a)
 {
   double c = 0.0;
   c += pow(a.c11.re, 2) + pow(a.c12.re, 2) + pow(a.c13.re, 2) + pow(a.c11.im, 2) + pow(a.c12.im, 2) + pow(a.c13.im, 2);
@@ -66,7 +69,7 @@ double operator~(zgfGaugeMatrix a)
   return c;
 }
 
-void zgfGenAField(zgfGaugeMatrix *af, zgfGaugeMatrix *gf)
+void GenAField(GaugeMatrix *af, GaugeMatrix *gf)
 {
 #pragma omp parallel for
   for (int i = 0; i < VOL * Nd; i++)
@@ -95,7 +98,7 @@ void zgfGenAField(zgfGaugeMatrix *af, zgfGaugeMatrix *gf)
   }
 }
 
-void zgfGenDeltaField(zgfGaugeMatrix *df, zgfGaugeMatrix *af)
+void GenDeltaField(GaugeMatrix *df, GaugeMatrix *af)
 {
 #pragma omp parallel for
   for (int i = 0; i < VOL; i++)
@@ -113,11 +116,11 @@ void zgfGenDeltaField(zgfGaugeMatrix *df, zgfGaugeMatrix *af)
   }
 }
 
-void zgfGenKField(zgfGaugeMatrix *kf, zgfGaugeMatrix *gf, zgfGaugeMatrix *grf)
+void GenKField(GaugeMatrix *kf, GaugeMatrix *gf, GaugeMatrix *grf)
 {
 }
 
-double zgfGetTheta(zgfGaugeMatrix *df)
+double GetTheta(GaugeMatrix *df)
 {
   double *theta;
   theta = (double *)malloc(VOL * sizeof(double));
@@ -128,3 +131,5 @@ double zgfGetTheta(zgfGaugeMatrix *df)
     theta[0] += theta[i];
   return theta[0] / Nc / VOL;
 }
+
+} // namespace ZetaGaugeFixing

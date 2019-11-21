@@ -1,12 +1,14 @@
 #include <cstdio>
-#include <cstdlib>
 #include "../include/zetaGF_lattice.h"
 #include "../include/zetaGF_io.h"
+
+namespace ZetaGF
+{
 
 bool swapEdian = true;
 size_t precision = sizeof(PREC);
 
-PREC zgfSwapOrder(PREC *buffer)
+PREC SwapOrder(PREC *buffer)
 {
   void *bufferOut = malloc(precision);
   if (precision == 4)
@@ -38,7 +40,7 @@ PREC zgfSwapOrder(PREC *buffer)
   return *(PREC *)bufferOut;
 }
 
-int zgfReadConf(zgfColorMatrix *gf, char *fn)
+int ReadConf(ColorMatrix *gf, char *fn)
 {
 #ifdef _WIN32
   FILE *fp;
@@ -52,13 +54,13 @@ int zgfReadConf(zgfColorMatrix *gf, char *fn)
   if (swapEdian)
 #pragma omp parallel for
     for (int i = 0; i < VOL * Nd * Nc * Nc * 2; i++)
-      ptr[i] = zgfSwapOrder(&(ptr[i]));
+      ptr[i] = SwapOrder(&(ptr[i]));
 
   fclose(fp);
   return 1;
 }
 
-int zgfWriteConf(zgfColorMatrix *gf, char *fn)
+int WriteConf(ColorMatrix *gf, char *fn)
 {
 #ifdef _WIN32
   FILE *fp;
@@ -67,8 +69,10 @@ int zgfWriteConf(zgfColorMatrix *gf, char *fn)
   FILE *fp = fopen(fn, "wb+");
 #endif
   void *ptr = (void *)gf;
-  fwrite(ptr, sizeof(zgfComplex), VOL * Nd * Nc * Nc, fp);
+  fwrite(ptr, sizeof(Complex), VOL * Nd * Nc * Nc, fp);
 
   fclose(fp);
   return 1;
 }
+
+} // namespace ZetaGaugeFixing

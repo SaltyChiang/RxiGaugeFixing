@@ -4,7 +4,15 @@
 #include "../include/zetaGF_linalg.h"
 #include "../extension/Eigen/Dense"
 
-void zgfGenAField_eigen(zgfColorMatrix *af, zgfColorMatrix *gf)
+namespace ZetaGF
+{
+
+void CopyGaugeField_eigen(ColorMatrix *tgf, ColorMatrix *gf)
+{
+  memcpy((void *)tgf, (void *)gf, sizeof(ColorMatrix) * VOL * Nd);
+}
+
+void GenAField_eigen(ColorMatrix *af, ColorMatrix *gf)
 {
   Eigen::Matrix3cd *afEigen = (Eigen::Matrix3cd *)af;
   Eigen::Matrix3cd *gfEigen = (Eigen::Matrix3cd *)gf;
@@ -17,7 +25,7 @@ void zgfGenAField_eigen(zgfColorMatrix *af, zgfColorMatrix *gf)
   }
 }
 
-void zgfGenDeltaField_eigen(zgfColorMatrix *df, zgfColorMatrix *af)
+void GenDeltaField_eigen(ColorMatrix *df, ColorMatrix *af)
 {
   Eigen::Matrix3cd *dfEigen = (Eigen::Matrix3cd *)df;
   Eigen::Matrix3cd *afEigen = (Eigen::Matrix3cd *)af;
@@ -40,7 +48,7 @@ void zgfGenDeltaField_eigen(zgfColorMatrix *df, zgfColorMatrix *af)
   }
 }
 
-void zgfInitGaugeRotateField_eigen(zgfColorMatrix *grf)
+void InitGaugeRotateField_eigen(ColorMatrix *grf)
 {
   Eigen::Matrix3cd *grfEigen = (Eigen::Matrix3cd *)grf;
 #pragma omp parallel for
@@ -48,7 +56,49 @@ void zgfInitGaugeRotateField_eigen(zgfColorMatrix *grf)
     grfEigen[i] = Eigen::Matrix3cd::Identity();
 }
 
-void zgfGenKField_eigen(zgfColorMatrix *kf, zgfColorMatrix *gf, zgfColorMatrix *grf)
+void ReunitGaugeRotateField_eigen(ColorMatrix *grf)
+{
+  // Eigen::Matrix3cd *grfEigen = (Eigen::Matrix3cd *)grf;
+  Eigen::Vector3cd *u = (Eigen::Vector3cd *)malloc(sizeof(Eigen::Vector3cd) * VOL);
+  Eigen::Vector3cd *v = (Eigen::Vector3cd *)malloc(sizeof(Eigen::Vector3cd) * VOL);
+  Eigen::Vector3cd *w = (Eigen::Vector3cd *)malloc(sizeof(Eigen::Vector3cd) * VOL);
+  double *t1 = (double *)malloc(sizeof(double) * VOL);
+  Eigen::dcomplex *t2 = (Eigen::dcomplex *)malloc(sizeof(Eigen::dcomplex) * VOL);
+  double *t3 = (double *)malloc(sizeof(double) * VOL);
+#pragma omp parallel for
+  for (int i = 0; i < VOL; i++)
+  {
+    u[i] << grf[i](0, 0), grf[i](1, 0), grf[i](2, 0);
+    v[i] << grf[i](0, 1), grf[i](1, 1), grf[i](2, 1);
+    t1[i] = u[i].norm();
+    u[i] /= t1[i];
+    t2[i] = u[i].conjugate().dot(v[i]);
+    v[i] -= t2[i] * u[i];
+    t3[i] = v[i].norm();
+    v[i] /= t3[i];
+    grf[i](0, 0) = u[i](0);
+    grf[i](1, 0) = u[i](1);
+    grf[i](2, 0) = u[i](2);
+    grf[i](0, 1) = v[i](0);
+    grf[i](1, 1) = v[i](1);
+    grf[i](2, 1) = v[i](2);
+    w[i](0) = u[i](1) * v[i](2) - u[i](2) * v[i](1);
+    w[i](1) = u[i](2) * v[i](0) - u[i](0) * v[i](2);
+    w[i](2) = u[i](0) * v[i](1) - u[i](1) * v[i](0);
+    w[i] = w[i].conjugate();
+    grf[i](0, 2) = w[i](0);
+    grf[i](1, 2) = w[i](1);
+    grf[i](2, 2) = w[i](2);
+  }
+  free(u);
+  free(v);
+  free(w);
+  free(t1);
+  free(t2);
+  free(t3);
+}
+
+void GenKField_eigen(ColorMatrix *kf, ColorMatrix *gf, ColorMatrix *grf)
 {
   Eigen::Matrix3cd *kfEigen = (Eigen::Matrix3cd *)kf;
   Eigen::Matrix3cd *gfEigen = (Eigen::Matrix3cd *)gf;
@@ -80,19 +130,11 @@ void zgfGenKField_eigen(zgfColorMatrix *kf, zgfColorMatrix *gf, zgfColorMatrix *
   }
 }
 
-void zgfGenGaugeRotateField_eigen(zgfColorMatrix *grf, zgfColorMatrix *kf)
+void GenGaugeRotateField_eigen(ColorMatrix *grf, ColorMatrix *tgf, int su2_index, int cb, bool overrelax, double overrelaxParam)
 {
-  Eigen::Matrix3cd *grfEigen = (Eigen::Matrix3cd *)grf;
-  Eigen::Matrix3cd *kfEigen = (Eigen::Matrix3cd *)kf;
-#pragma omp parallel for
-  for (int i = 0; i < VOL; i++)
-  {
-    grfEigen[i] = kfEigen[i] / sqrt(kfEigen[i].determinant());
-    grfEigen[i] = grfEigen[i] * grfEigen[i];
-  }
 }
 
-void zgfUpdateGaugeField_eigen(zgfColorMatrix *gf, zgfColorMatrix *grf)
+void UpdateGaugeField_eigen(ColorMatrix *gf, ColorMatrix *grf)
 {
   Eigen::Matrix3cd *gfEigen = (Eigen::Matrix3cd *)gf;
   Eigen::Matrix3cd *grfEigen = (Eigen::Matrix3cd *)grf;
@@ -119,7 +161,13 @@ void zgfUpdateGaugeField_eigen(zgfColorMatrix *gf, zgfColorMatrix *grf)
   }
 }
 
-double zgfGetTheta_eigen(zgfColorMatrix *df)
+void UpdateGaugeField_eigen(ColorMatrix *tgf, ColorMatrix *gf, ColorMatrix *grf)
+{
+  CopyGaugeField_eigen(tgf, gf);
+  UpdateGaugeField_eigen(tgf, grf);
+}
+
+double GetTheta_eigen(ColorMatrix *df)
 {
   Eigen::Matrix3cd *dfEigen = (Eigen::Matrix3cd *)df;
   double *theta;
@@ -129,5 +177,24 @@ double zgfGetTheta_eigen(zgfColorMatrix *df)
     theta[i] = dfEigen[i].squaredNorm();
   for (int i = 1; i < VOL; i++)
     theta[0] += theta[i];
-  return theta[0] / Nc / VOL;
+  double thetaOut = theta[0] / (VOL * Nc);
+  free(theta);
+  return thetaOut;
 }
+
+double GetFunctional_eigen(ColorMatrix *gf)
+{
+  Eigen::Matrix3cd *gfEigen = (Eigen::Matrix3cd *)gf;
+  double *func;
+  func = (double *)malloc(VOL * Nd * sizeof(double));
+#pragma omp parallel for
+  for (int i = 0; i < VOL * Nd; i++)
+    func[i] = gfEigen[i].trace().real();
+  for (int i = 1; i < VOL * Nd; i++)
+    func[0] += func[i];
+  double funcOut = func[0] / (VOL * Nd * Nc);
+  free(func);
+  return funcOut;
+}
+
+} // namespace ZetaGaugeFixing

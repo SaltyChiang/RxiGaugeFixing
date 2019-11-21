@@ -15,16 +15,25 @@
 #define zgfBeta 0.1
 #define zgfG0 sqrt(2 * Nc / beta)
 
+namespace ZetaGF
+{
+
 typedef struct
 {
   PREC re, im;
-} zgfComplex;
+} Complex;
 
 typedef struct
 {
-  zgfComplex c11, c12, c13;
-  zgfComplex c21, c22, c23;
-  zgfComplex c31, c32, c33;
-} zgfGaugeMatrix;
+  Complex c11, c12, c13;
+  Complex c21, c22, c23;
+  Complex c31, c32, c33;
+} GaugeMatrix;
 
-typedef Eigen::Matrix<Eigen::dcomplex, Nc, Nc> zgfColorMatrix;
+typedef Eigen::Matrix<Eigen::dcomplex, Nc, Nc> ColorMatrix;
+
+} // namespace ZetaGaugeFixing
+
+#include <cstdlib>
+#include <chrono>
+#include "zetaGF_macro.h"
