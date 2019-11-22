@@ -51,66 +51,62 @@ void grelax(LatticeColorMatrix &g,
     v[rb[cb]] += ug[mu] + adj(u_neg[mu]);
   }
 
-  if (Nc > 1)
-  {
+  /* Extract components r_k proportional to SU(2) submatrix su2_index */
+  /* from the SU(Nc) matrix V. The SU(2) matrix is parametrized in the */
+  /* sigma matrix basis. */
+  su2Extract(r, v, su2_index, rb[cb]);
 
-    /* Extract components r_k proportional to SU(2) submatrix su2_index */
-    /* from the SU(Nc) matrix V. The SU(2) matrix is parametrized in the */
-    /* sigma matrix basis. */
-    su2Extract(r, v, su2_index, rb[cb]);
-
-    /*
+  /*
      * Now project onto SU(2)
      */
-    LatticeReal r_l;
-    r_l[rb[cb]] = sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2] + r[3] * r[3]);
+  LatticeReal r_l;
+  r_l[rb[cb]] = sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2] + r[3] * r[3]);
 
-    // Normalize
-    LatticeBoolean lbtmp;
-    lbtmp[rb[cb]] = r_l > fuzz;
-    LatticeReal lftmp;
-    lftmp[rb[cb]] = 1.0 / where(lbtmp, r_l, LatticeReal(1));
+  // Normalize
+  LatticeBoolean lbtmp;
+  lbtmp[rb[cb]] = r_l > fuzz;
+  LatticeReal lftmp;
+  lftmp[rb[cb]] = 1.0 / where(lbtmp, r_l, LatticeReal(1));
 
-    // Fill   (r[0]/r_l, -r[1]/r_l, -r[2]/r_l, -r[3]/r_l) for r_l > fuzz
-    //  and   (1,0,0,0)  for sites with r_l < fuzz
-    multi1d<LatticeReal> a(4);
-    a[0][rb[cb]] = where(lbtmp, r[0] * lftmp, LatticeReal(1));
-    a[1][rb[cb]] = where(lbtmp, -(r[1] * lftmp), LatticeReal(0));
-    a[2][rb[cb]] = where(lbtmp, -(r[2] * lftmp), LatticeReal(0));
-    a[3][rb[cb]] = where(lbtmp, -(r[3] * lftmp), LatticeReal(0));
+  // Fill   (r[0]/r_l, -r[1]/r_l, -r[2]/r_l, -r[3]/r_l) for r_l > fuzz
+  //  and   (1,0,0,0)  for sites with r_l < fuzz
+  multi1d<LatticeReal> a(4);
+  a[0][rb[cb]] = where(lbtmp, r[0] * lftmp, LatticeReal(1));
+  a[1][rb[cb]] = where(lbtmp, -(r[1] * lftmp), LatticeReal(0));
+  a[2][rb[cb]] = where(lbtmp, -(r[2] * lftmp), LatticeReal(0));
+  a[3][rb[cb]] = where(lbtmp, -(r[3] * lftmp), LatticeReal(0));
 
-    // /* Now do the overrelaxation, if desired */
-    // if (ordo)
-    // {
-    //   /* get angle */
-    //   LatticeReal theta_old;
-    //   theta_old[rb[cb]] = acos(a[0]);
+  // /* Now do the overrelaxation, if desired */
+  // if (ordo)
+  // {
+  //   /* get angle */
+  //   LatticeReal theta_old;
+  //   theta_old[rb[cb]] = acos(a[0]);
 
-    //   /* old sin */
-    //   LatticeReal oldsin;
-    //   oldsin[rb[cb]] = sin(theta_old);
+  //   /* old sin */
+  //   LatticeReal oldsin;
+  //   oldsin[rb[cb]] = sin(theta_old);
 
-    //   /* overrelax, i.e. multiply by the angle */
-    //   LatticeReal theta_new;
-    //   theta_new[rb[cb]] = theta_old * orpara;
+  //   /* overrelax, i.e. multiply by the angle */
+  //   LatticeReal theta_new;
+  //   theta_new[rb[cb]] = theta_old * orpara;
 
-    //   /* compute sin(new)/sin(old) */
-    //   /* set the ratio to 0, if sin(old) < FUZZ */
-    //   lftmp[rb[cb]] = where(oldsin > fuzz, sin(theta_new) / oldsin, LatticeReal(0));
+  //   /* compute sin(new)/sin(old) */
+  //   /* set the ratio to 0, if sin(old) < FUZZ */
+  //   lftmp[rb[cb]] = where(oldsin > fuzz, sin(theta_new) / oldsin, LatticeReal(0));
 
-    //   /* get the new cos = a[0] */
-    //   a[0][rb[cb]] = cos(theta_new);
+  //   /* get the new cos = a[0] */
+  //   a[0][rb[cb]] = cos(theta_new);
 
-    //   /* get the new a_k, k = 1, 2, 3 */
-    //   a[1][rb[cb]] *= lftmp;
-    //   a[2][rb[cb]] *= lftmp;
-    //   a[3][rb[cb]] *= lftmp;
-    // }
+  //   /* get the new a_k, k = 1, 2, 3 */
+  //   a[1][rb[cb]] *= lftmp;
+  //   a[2][rb[cb]] *= lftmp;
+  //   a[3][rb[cb]] *= lftmp;
+  // }
 
-    /* Now fill the SU(Nc) matrix V with the SU(2) submatrix 'su2_index' */
-    /* paramtrized by a_k in the sigma matrix basis. */
-    sunFill(v, a, su2_index, rb[cb]);
-  }
+  /* Now fill the SU(Nc) matrix V with the SU(2) submatrix 'su2_index' */
+  /* paramtrized by a_k in the sigma matrix basis. */
+  sunFill(v, a, su2_index, rb[cb]);
 
   // Now do the gauge transformation with matrix V:
   // Multiply into the global "g" field

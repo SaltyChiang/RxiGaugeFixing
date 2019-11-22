@@ -32,8 +32,19 @@ typedef struct
 
 typedef Eigen::Matrix<Eigen::dcomplex, Nc, Nc> ColorMatrix;
 
-} // namespace ZetaGaugeFixing
+} // namespace ZetaGF
 
+#include <cstdio>
 #include <cstdlib>
+#include <iostream>
 #include <chrono>
 #include "zetaGF_macro.h"
+
+extern ZetaGF::ColorMatrix *v;
+extern double *realA;
+extern double *realB;
+extern double *r_l;
+extern bool *lbtmp;
+
+extern ZetaGF::ColorMatrix *deltaField;
+extern ZetaGF::ColorMatrix *aField;

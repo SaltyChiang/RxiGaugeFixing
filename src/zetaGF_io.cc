@@ -1,4 +1,3 @@
-#include <cstdio>
 #include "../include/zetaGF_lattice.h"
 #include "../include/zetaGF_io.h"
 
