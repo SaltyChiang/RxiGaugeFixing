@@ -39,15 +39,15 @@ int main(int argc, char *argv[])
   // printMatrix(gaugeField[VOL * Nd - 1]);
 
   // StartTimeChrono(1);
-  // double theta1 = GetTheta_eigen(deltaField, aField, gaugeField);
+  double theta1 = GetTheta_eigen(deltaField, aField, gaugeField);
   // StopTimeChrono(1);
-  // printf("%le\n", theta1);
+  printf("%le\n", theta1);
 
-  LandauGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, 1e-5, 1, true, 1.7);
+  LandauGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, 1e-10, 1000, true, 1.7);
   // // LandauGaugeSteepest(gaugeField, tempGaugeField, gaugeRotateField, 1e-5, 100);
 
-  // double theta2 = GetTheta_eigen(deltaField, aField, gaugeField);
-  // printf("%le\n", theta2);
+  double theta2 = GetTheta_eigen(deltaField, aField, gaugeField);
+  printf("%le\n", theta2);
 
   // PrintTimeChrono(1, "Mine");
   return 1;

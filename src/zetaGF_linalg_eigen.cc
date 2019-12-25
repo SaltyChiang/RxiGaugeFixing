@@ -5,6 +5,9 @@
 namespace ZetaGF
 {
 
+typedef Eigen::Matrix<Eigen::dcomplex, Nc, Nc, Eigen::RowMajor> ColorMatrix_Eigen;
+typedef Eigen::Matrix<Eigen::dcomplex, Nc, 1> ColorVector_Eigen;
+
 void CopyGaugeField_eigen(ColorMatrix *tgf, ColorMatrix *gf)
 {
   memcpy((void *)tgf, (void *)gf, sizeof(ColorMatrix) * VOL * Nd);
@@ -12,45 +15,45 @@ void CopyGaugeField_eigen(ColorMatrix *tgf, ColorMatrix *gf)
 
 void InitGaugeRotateField_eigen(ColorMatrix *grf)
 {
-  Eigen::Matrix3cd *grfEigen = (Eigen::Matrix3cd *)grf;
+  ColorMatrix_Eigen *grfEigen = (ColorMatrix_Eigen *)grf;
 #pragma omp parallel for
   for (int i = 0; i < VOL; i++)
-    grfEigen[i] = Eigen::Matrix3cd::Identity();
+    grfEigen[i] = ColorMatrix_Eigen::Identity();
 }
 
 void ReunitGaugeRotateField_eigen(ColorMatrix *grf)
 {
-  // Eigen::Matrix3cd *grfEigen = (Eigen::Matrix3cd *)grf;
-  Eigen::Vector3cd *u = (Eigen::Vector3cd *)malloc(sizeof(Eigen::Vector3cd) * VOL);
-  Eigen::Vector3cd *v = (Eigen::Vector3cd *)malloc(sizeof(Eigen::Vector3cd) * VOL);
-  Eigen::Vector3cd *w = (Eigen::Vector3cd *)malloc(sizeof(Eigen::Vector3cd) * VOL);
+  ColorMatrix_Eigen *grfEigen = (ColorMatrix_Eigen *)grf;
+  ColorVector_Eigen *u = (ColorVector_Eigen *)malloc(sizeof(ColorVector_Eigen) * VOL);
+  ColorVector_Eigen *v = (ColorVector_Eigen *)malloc(sizeof(ColorVector_Eigen) * VOL);
+  ColorVector_Eigen *w = (ColorVector_Eigen *)malloc(sizeof(ColorVector_Eigen) * VOL);
   double *t1 = (double *)malloc(sizeof(double) * VOL);
   Eigen::dcomplex *t2 = (Eigen::dcomplex *)malloc(sizeof(Eigen::dcomplex) * VOL);
   double *t3 = (double *)malloc(sizeof(double) * VOL);
 #pragma omp parallel for
   for (int i = 0; i < VOL; i++)
   {
-    u[i] << grf[i](0, 0), grf[i](1, 0), grf[i](2, 0);
-    v[i] << grf[i](0, 1), grf[i](1, 1), grf[i](2, 1);
+    u[i] << grfEigen[i](0, 0), grfEigen[i](1, 0), grfEigen[i](2, 0);
+    v[i] << grfEigen[i](0, 1), grfEigen[i](1, 1), grfEigen[i](2, 1);
     t1[i] = u[i].norm();
     u[i] /= t1[i];
-    t2[i] = u[i].conjugate().dot(v[i]);
+    t2[i] = u[i].dot(v[i]);
     v[i] -= t2[i] * u[i];
     t3[i] = v[i].norm();
     v[i] /= t3[i];
-    grf[i](0, 0) = u[i](0);
-    grf[i](1, 0) = u[i](1);
-    grf[i](2, 0) = u[i](2);
-    grf[i](0, 1) = v[i](0);
-    grf[i](1, 1) = v[i](1);
-    grf[i](2, 1) = v[i](2);
+    grfEigen[i](0, 0) = u[i](0);
+    grfEigen[i](1, 0) = u[i](1);
+    grfEigen[i](2, 0) = u[i](2);
+    grfEigen[i](0, 1) = v[i](0);
+    grfEigen[i](1, 1) = v[i](1);
+    grfEigen[i](2, 1) = v[i](2);
     w[i](0) = u[i](1) * v[i](2) - u[i](2) * v[i](1);
     w[i](1) = u[i](2) * v[i](0) - u[i](0) * v[i](2);
     w[i](2) = u[i](0) * v[i](1) - u[i](1) * v[i](0);
     w[i] = w[i].conjugate();
-    grf[i](0, 2) = w[i](0);
-    grf[i](1, 2) = w[i](1);
-    grf[i](2, 2) = w[i](2);
+    grfEigen[i](0, 2) = w[i](0);
+    grfEigen[i](1, 2) = w[i](1);
+    grfEigen[i](2, 2) = w[i](2);
   }
   free(u);
   free(v);
@@ -62,8 +65,8 @@ void ReunitGaugeRotateField_eigen(ColorMatrix *grf)
 
 void UpdateGaugeField_eigen(ColorMatrix *gf, ColorMatrix *grf)
 {
-  Eigen::Matrix3cd *gfEigen = (Eigen::Matrix3cd *)gf;
-  Eigen::Matrix3cd *grfEigen = (Eigen::Matrix3cd *)grf;
+  ColorMatrix_Eigen *gfEigen = (ColorMatrix_Eigen *)gf;
+  ColorMatrix_Eigen *grfEigen = (ColorMatrix_Eigen *)grf;
 #pragma omp parallel for
   for (int i = 0; i < VOL; i++)
   {
@@ -89,9 +92,10 @@ void UpdateGaugeField_eigen(ColorMatrix *gf, ColorMatrix *grf)
 
 void UpdateGaugeField_eigen(ColorMatrix *tgf, ColorMatrix *gf, ColorMatrix *grf)
 {
-  Eigen::Matrix3cd *tgfEigen = (Eigen::Matrix3cd *)tgf;
-  Eigen::Matrix3cd *gfEigen = (Eigen::Matrix3cd *)gf;
-  Eigen::Matrix3cd *grfEigen = (Eigen::Matrix3cd *)grf;
+
+  ColorMatrix_Eigen *tgfEigen = (ColorMatrix_Eigen *)tgf;
+  ColorMatrix_Eigen *gfEigen = (ColorMatrix_Eigen *)gf;
+  ColorMatrix_Eigen *grfEigen = (ColorMatrix_Eigen *)grf;
 #pragma omp parallel for
   for (int i = 0; i < VOL; i++)
   {
@@ -113,21 +117,21 @@ void UpdateGaugeField_eigen(ColorMatrix *tgf, ColorMatrix *gf, ColorMatrix *grf)
 
 void GenAField_eigen(ColorMatrix *af, ColorMatrix *gf)
 {
-  Eigen::Matrix3cd *afEigen = (Eigen::Matrix3cd *)af;
-  Eigen::Matrix3cd *gfEigen = (Eigen::Matrix3cd *)gf;
+  ColorMatrix_Eigen *afEigen = (ColorMatrix_Eigen *)af;
+  ColorMatrix_Eigen *gfEigen = (ColorMatrix_Eigen *)gf;
   Eigen::dcomplex coef(0.0, 2.0);
 #pragma omp parallel for
   for (int i = 0; i < VOL * Nd; i++)
   {
     afEigen[i] = (gfEigen[i] - gfEigen[i].adjoint()) / coef;
-    afEigen[i] -= afEigen[i].trace() / 3.0 * Eigen::Matrix3cd::Identity();
+    afEigen[i] -= afEigen[i].trace() / 3.0 * ColorMatrix_Eigen::Identity();
   }
 }
 
 void GenDeltaField_eigen(ColorMatrix *df, ColorMatrix *af)
 {
-  Eigen::Matrix3cd *dfEigen = (Eigen::Matrix3cd *)df;
-  Eigen::Matrix3cd *afEigen = (Eigen::Matrix3cd *)af;
+  ColorMatrix_Eigen *dfEigen = (ColorMatrix_Eigen *)df;
+  ColorMatrix_Eigen *afEigen = (ColorMatrix_Eigen *)af;
 #pragma omp parallel for
   for (int i = 0; i < VOL; i++)
   {
@@ -151,7 +155,7 @@ double GetTheta_eigen(ColorMatrix *df, ColorMatrix *af, ColorMatrix *gf)
 {
   GenAField_eigen(af, gf);
   GenDeltaField_eigen(df, af);
-  Eigen::Matrix3cd *dfEigen = (Eigen::Matrix3cd *)df;
+  ColorMatrix_Eigen *dfEigen = (ColorMatrix_Eigen *)df;
   double *theta;
   theta = (double *)malloc(VOL * sizeof(double));
 #pragma omp parallel for
@@ -166,7 +170,7 @@ double GetTheta_eigen(ColorMatrix *df, ColorMatrix *af, ColorMatrix *gf)
 
 double GetFunctional_eigen(ColorMatrix *gf)
 {
-  Eigen::Matrix3cd *gfEigen = (Eigen::Matrix3cd *)gf;
+  ColorMatrix_Eigen *gfEigen = (ColorMatrix_Eigen *)gf;
   double *func;
   func = (double *)malloc(VOL * Nd * sizeof(double));
 #pragma omp parallel for
@@ -184,9 +188,9 @@ double GetFunctional_eigen(ColorMatrix *gf)
  */
 void GenKField_eigen(ColorMatrix *kf, ColorMatrix *gf, ColorMatrix *grf)
 {
-  Eigen::Matrix3cd *kfEigen = (Eigen::Matrix3cd *)kf;
-  Eigen::Matrix3cd *gfEigen = (Eigen::Matrix3cd *)gf;
-  Eigen::Matrix3cd *grfEigen = (Eigen::Matrix3cd *)grf;
+  ColorMatrix_Eigen *kfEigen = (ColorMatrix_Eigen *)kf;
+  ColorMatrix_Eigen *gfEigen = (ColorMatrix_Eigen *)gf;
+  ColorMatrix_Eigen *grfEigen = (ColorMatrix_Eigen *)grf;
 #pragma omp parallel for
   for (int i = 0; i < VOL; i++)
   {

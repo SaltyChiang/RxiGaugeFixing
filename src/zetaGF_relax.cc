@@ -37,13 +37,10 @@ void sunFill(double *r, ColorMatrix *c, int su2_index)
 
 void gRelax(ColorMatrix *tgf, int su2_index, int cb, int i, int xm, int ym, int zm, int tm, bool overrelax, double overrelaxParam)
 {
-    v[i] += tgf[i * Nd + 0] + tgf[xm * Nd + 0].adjoint();
+    v[i] = tgf[i * Nd + 0] + tgf[xm * Nd + 0].adjoint();
     v[i] += tgf[i * Nd + 1] + tgf[ym * Nd + 1].adjoint();
     v[i] += tgf[i * Nd + 2] + tgf[zm * Nd + 2].adjoint();
     v[i] += tgf[i * Nd + 3] + tgf[tm * Nd + 3].adjoint();
-
-    if (i == 0)
-        printMatrix(v[0]);
 
     su2Extract(&(realB[i * Nd]), &(v[i]), su2_index);
 
@@ -85,9 +82,9 @@ void gRelax(ColorMatrix *tgf, int su2_index, int cb, int i, int xm, int ym, int 
         realA[i * Nd + 0] = cos(theta_new);
 
         /* get the new a_k, k = 1, 2, 3 */
-        realA[1] *= (oldsin > fuzz) ? (sin(theta_new) / oldsin) : 0.0;
-        realA[2] *= (oldsin > fuzz) ? (sin(theta_new) / oldsin) : 0.0;
-        realA[3] *= (oldsin > fuzz) ? (sin(theta_new) / oldsin) : 0.0;
+        realA[i * Nd + 1] *= (oldsin > fuzz) ? (sin(theta_new) / oldsin) : 0.0;
+        realA[i * Nd + 2] *= (oldsin > fuzz) ? (sin(theta_new) / oldsin) : 0.0;
+        realA[i * Nd + 3] *= (oldsin > fuzz) ? (sin(theta_new) / oldsin) : 0.0;
     }
 
     /* Now fill the SU(Nc) matrix V with the SU(2) submatrix 'su2_index' */
@@ -123,7 +120,7 @@ void RelaxGaugeRotateField_eigen(ColorMatrix *grf, ColorMatrix *gf, ColorMatrix 
         exit(255);
     }
 
-    // #pragma omp parallel for
+#pragma omp parallel for
     for (int i = 0; i < VOL; i++)
     {
         v[i] = ColorMatrix::Zero();

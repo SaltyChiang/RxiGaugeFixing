@@ -35,15 +35,18 @@ int LandauGaugeRelax(ColorMatrix *gf, ColorMatrix *tgf, ColorMatrix *grf, double
     ReunitGaugeRotateField_eigen(grf);
 
     UpdateGaugeField_eigen(tgf, gf, grf);
+
     funcNew = GetFunctional_eigen(tgf);
+    /* Normalized convergence criterion: */
+    res = fabs((funcNew - funcOld) / funcNew);
+    funcOld = funcNew;
+
     // std::cout << funcNew << " " << funcOld << std::endl;
     std::cout << "COULGAUGE: iter= " << iterCount
               << "  tgfold= " << funcOld
               << "  tgfnew= " << funcNew
+              << "  convar= " << res
               << std::endl;
-    /* Normalized convergence criterion: */
-    res = fabs((funcNew - funcOld) / funcNew);
-    funcOld = funcNew;
   } /* end while loop */
 
   UpdateGaugeField_eigen(gf, grf);
