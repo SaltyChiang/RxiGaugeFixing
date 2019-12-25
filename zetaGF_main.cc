@@ -34,24 +34,21 @@ int main(int argc, char *argv[])
   realA = zgfMalloc(double, VOL * 4);
   r_l = zgfMalloc(double, VOL);
   lbtmp = zgfMalloc(bool, VOL);
-  ReadConf(gaugeField, new char[15]{"data/conf.data"});
+  ReadConf(gaugeField, new char[20]{"data/qio.double"});
+  // printMatrix(gaugeField[0]);
+  // printMatrix(gaugeField[VOL * Nd - 1]);
 
-  StartTimeChrono(1);
-  double theta1 = GetTheta_eigen(deltaField, aField, gaugeField);
-  StopTimeChrono(1);
-  printf("%le\n", theta1);
+  // StartTimeChrono(1);
+  // double theta1 = GetTheta_eigen(deltaField, aField, gaugeField);
+  // StopTimeChrono(1);
+  // printf("%le\n", theta1);
 
-  LandauGauge(gaugeField, tempGaugeField, gaugeRotateField, 1e-5, 1, true, 1.7);
+  LandauGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, 1e-5, 1, true, 1.7);
+  // // LandauGaugeSteepest(gaugeField, tempGaugeField, gaugeRotateField, 1e-5, 100);
 
-  double theta2 = GetTheta_eigen(deltaField, aField, gaugeField);
-  printf("%le\n", theta2);
+  // double theta2 = GetTheta_eigen(deltaField, aField, gaugeField);
+  // printf("%le\n", theta2);
 
-  // StartTimeChrono(2);
-  // double theta2 = 0.0;
-  // double  theta2 = GetTheta_eigen(deltaField, aField, gaugeField);
-  // StopTimeChrono(2);
-
-  PrintTimeChrono(1, "Mine");
-  // PrintTimeChrono(2, "Eigen");
+  // PrintTimeChrono(1, "Mine");
   return 1;
 }

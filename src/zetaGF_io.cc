@@ -4,7 +4,7 @@
 namespace ZetaGF
 {
 
-bool swapEdian = true;
+bool swapEdian = false;
 size_t precision = sizeof(PREC);
 
 PREC SwapOrder(PREC *buffer)

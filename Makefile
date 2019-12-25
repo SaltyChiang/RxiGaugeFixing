@@ -16,3 +16,6 @@ $(OBJ) : bin/%.o : src/%.cc include/%.h $(INC)
 
 bin/zetaGF.exe : zetaGF_main.cc $(OBJ)
 	$(CXX) $(CXXFLAGS) $^ -o $@
+
+clean : 
+	rm -rf bin/*

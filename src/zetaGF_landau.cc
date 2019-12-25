@@ -2,17 +2,16 @@
 #include "../include/zetaGF_landau.h"
 #include "../include/zetaGF_linalg_eigen.h"
 #include "../include/zetaGF_relax.h"
+#include "../include/zetaGF_steepest.h"
 
 namespace ZetaGF
 {
 
-int LandauGauge(ColorMatrix *gf, ColorMatrix *tgf, ColorMatrix *grf, double iterAccu, int iterMax, bool overrelax, double overrelaxParam)
+int LandauGaugeRelax(ColorMatrix *gf, ColorMatrix *tgf, ColorMatrix *grf, double iterAccu, int iterMax, bool overrelax, double overrelaxParam)
 {
   int iterCount = 0;
   double res = 1.0;
-  double *theta;
   double funcOld, funcNew;
-  theta = (double *)malloc(VOL * Nd * sizeof(double));
 
   funcOld = GetFunctional_eigen(gf);
   InitGaugeRotateField_eigen(grf);
@@ -37,10 +36,41 @@ int LandauGauge(ColorMatrix *gf, ColorMatrix *tgf, ColorMatrix *grf, double iter
 
     UpdateGaugeField_eigen(tgf, gf, grf);
     funcNew = GetFunctional_eigen(tgf);
+    // std::cout << funcNew << " " << funcOld << std::endl;
+    std::cout << "COULGAUGE: iter= " << iterCount
+              << "  tgfold= " << funcOld
+              << "  tgfnew= " << funcNew
+              << std::endl;
     /* Normalized convergence criterion: */
     res = fabs((funcNew - funcOld) / funcNew);
-    //printf("%le\n", GetTheta_eigen(deltaField, aField, tgf));
     funcOld = funcNew;
+  } /* end while loop */
+
+  UpdateGaugeField_eigen(gf, grf);
+
+  return iterCount;
+}
+
+int LandauGaugeSteepest(ColorMatrix *gf, ColorMatrix *tgf, ColorMatrix *grf, double iterAccu, int iterMax)
+{
+  int iterCount = 0;
+  double theta;
+
+  theta = GetTheta_eigen(deltaField, aField, gf);
+  InitGaugeRotateField_eigen(grf);
+
+  while ((theta > iterAccu) && iterCount < iterMax)
+  {
+    iterCount += 1;
+
+    SteepestGaugeRotateField_eigen(grf, deltaField);
+
+    /* Reunitarize */
+    ReunitGaugeRotateField_eigen(grf);
+
+    UpdateGaugeField_eigen(tgf, gf, grf);
+    printf("%le\n", theta);
+    theta = GetTheta_eigen(deltaField, aField, tgf);
   } /* end while loop */
 
   UpdateGaugeField_eigen(gf, grf);

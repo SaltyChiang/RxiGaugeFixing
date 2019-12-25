@@ -1,11 +1,16 @@
-#pragma once
+#ifndef __ZETAGF_LATTICE_H__
+#define __ZETAGF_LATTICE_H__
+
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
 
 #include "../extension/Eigen/Core"
 
 #define Nc 3
 #define Nd 4
-#define Nt 32
-#define Ns 32
+#define Nt 16
+#define Ns 16
 #define Nx Ns
 #define Ny Ns
 #define Nz Ns
@@ -30,13 +35,20 @@ typedef struct
   Complex c31, c32, c33;
 } GaugeMatrix;
 
-typedef Eigen::Matrix<Eigen::dcomplex, Nc, Nc> ColorMatrix;
+typedef Eigen::Matrix<Eigen::dcomplex, Nc, Nc, Eigen::RowMajor> ColorMatrix;
+
+inline void printMatrix(ColorMatrix matrix)
+{
+  for (int i = 0; i < Nc; i++)
+  {
+    for (int j = 0; j < Nc; j++)
+      printf("(%10.6f,%10.6f) ", matrix(i, j).real(), matrix(i, j).imag());
+    printf("\n");
+  }
+}
 
 } // namespace ZetaGF
 
-#include <cstdio>
-#include <cstdlib>
-#include <iostream>
 #include <chrono>
 #include "zetaGF_macro.h"
 
@@ -48,3 +60,5 @@ extern bool *lbtmp;
 
 extern ZetaGF::ColorMatrix *deltaField;
 extern ZetaGF::ColorMatrix *aField;
+
+#endif

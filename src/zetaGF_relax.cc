@@ -42,6 +42,9 @@ void gRelax(ColorMatrix *tgf, int su2_index, int cb, int i, int xm, int ym, int 
     v[i] += tgf[i * Nd + 2] + tgf[zm * Nd + 2].adjoint();
     v[i] += tgf[i * Nd + 3] + tgf[tm * Nd + 3].adjoint();
 
+    if (i == 0)
+        printMatrix(v[0]);
+
     su2Extract(&(realB[i * Nd]), &(v[i]), su2_index);
 
     /*
@@ -120,7 +123,7 @@ void RelaxGaugeRotateField_eigen(ColorMatrix *grf, ColorMatrix *gf, ColorMatrix 
         exit(255);
     }
 
-#pragma omp parallel for
+    // #pragma omp parallel for
     for (int i = 0; i < VOL; i++)
     {
         v[i] = ColorMatrix::Zero();
