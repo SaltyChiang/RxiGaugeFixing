@@ -1,4 +1,4 @@
-# ZetaGaugeFixing
+# RxiGaugeFixing
 
 You need to add ```Eigen``` to the repo.
 

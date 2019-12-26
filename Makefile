@@ -5,17 +5,17 @@ CXXFLAGS = -std=c++14 -O3 -Wall -g -fopenmp
 LDFLAGS =
 LIBS =
 
-all : bin/zetaGF.exe
+all : bin/RxiGF.exe
 
 SRC = $(wildcard src/*.cc)
 OBJ = $(patsubst %.cc, bin/%.o, $(notdir $(SRC)))
-INC = include/zetaGF_lattice.h include/zetaGF_macro.h
+INC = include/RxiGF_lattice.h include/RxiGF_macro.h
 
 $(OBJ) : bin/%.o : src/%.cc include/%.h $(INC)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-bin/zetaGF.exe : zetaGF_main.cc $(OBJ)
+bin/RxiGF.exe : RxiGF_main.cc $(OBJ)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-clean : 
+clean :
 	rm -rf bin/*
