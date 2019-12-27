@@ -62,6 +62,7 @@ int RxiGaugeRelax(ColorMatrix *gf, ColorMatrix *tgf, ColorMatrix *grf, ColorMatr
 
   InitGaugeRotateField_eigen(grf);
   funcOld = GetFunctional_eigen(gf, grf, lf);
+  double tempTheta;
 
   while ((res > iterAccu) && iterCount < iterMax)
   {
@@ -88,12 +89,15 @@ int RxiGaugeRelax(ColorMatrix *gf, ColorMatrix *tgf, ColorMatrix *grf, ColorMatr
     res = fabs((funcNew - funcOld) / funcNew);
     funcOld = funcNew;
 
+    tempTheta = GetTheta_eigen(deltaField, aField, tgf, lf);
+
     std::cout.precision(15);
 
     // std::cout << funcNew << " " << funcOld << std::endl;
     std::cout << "COULGAUGE: iter= " << iterCount
               << "  tgfold= " << funcOld
               << "  tgfnew= " << funcNew
+              << "  theta= " << tempTheta
               << "  convar= " << res
               << std::endl;
   } /* end while loop */
