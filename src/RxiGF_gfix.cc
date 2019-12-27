@@ -88,6 +88,8 @@ int RxiGaugeRelax(ColorMatrix *gf, ColorMatrix *tgf, ColorMatrix *grf, ColorMatr
     res = fabs((funcNew - funcOld) / funcNew);
     funcOld = funcNew;
 
+    std::cout.precision(15);
+
     // std::cout << funcNew << " " << funcOld << std::endl;
     std::cout << "COULGAUGE: iter= " << iterCount
               << "  tgfold= " << funcOld
