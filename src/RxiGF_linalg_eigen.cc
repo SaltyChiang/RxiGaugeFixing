@@ -151,10 +151,52 @@ void GenDeltaField_eigen(ColorMatrix *df, ColorMatrix *af)
   }
 }
 
+void GenDeltaField_eigen(ColorMatrix *df, ColorMatrix *af, ColorMatrix *lf)
+{
+  ColorMatrix_Eigen *dfEigen = (ColorMatrix_Eigen *)df;
+  ColorMatrix_Eigen *afEigen = (ColorMatrix_Eigen *)af;
+  ColorMatrix_Eigen *lfEigen = (ColorMatrix_Eigen *)lf;
+#pragma omp parallel for
+  for (int i = 0; i < VOL; i++)
+  {
+    int t = i / (Nz * Ny * Nz);
+    int z = i % (Nz * Ny * Nx) / (Ny * Nx);
+    int y = i % (Ny * Nx) / (Nx);
+    int x = i % (Nx);
+    int tm = i + (t == 0 ? (Nt - 1) : -1) * Nz * Ny * Nx;
+    int zm = i + (z == 0 ? (Nz - 1) : -1) * Ny * Nx;
+    int ym = i + (y == 0 ? (Ny - 1) : -1) * Nx;
+    int xm = i + (x == 0 ? (Nx - 1) : -1);
+
+    dfEigen[i] = afEigen[i * Nd + 0] - afEigen[xm * Nd + 0] +
+                 afEigen[i * Nd + 1] - afEigen[ym * Nd + 1] +
+                 afEigen[i * Nd + 2] - afEigen[zm * Nd + 2] +
+                 afEigen[i * Nd + 3] - afEigen[tm * Nd + 3];
+    dfEigen[i] -= lfEigen[i];
+  }
+}
+
 double GetTheta_eigen(ColorMatrix *df, ColorMatrix *af, ColorMatrix *gf)
 {
   GenAField_eigen(af, gf);
   GenDeltaField_eigen(df, af);
+  ColorMatrix_Eigen *dfEigen = (ColorMatrix_Eigen *)df;
+  double *theta;
+  theta = (double *)malloc(VOL * sizeof(double));
+#pragma omp parallel for
+  for (int i = 0; i < VOL; i++)
+    theta[i] = dfEigen[i].squaredNorm();
+  for (int i = 1; i < VOL; i++)
+    theta[0] += theta[i];
+  double thetaOut = theta[0] / (VOL * Nc);
+  free(theta);
+  return thetaOut;
+}
+
+double GetTheta_eigen(ColorMatrix *df, ColorMatrix *af, ColorMatrix *gf, ColorMatrix *lf)
+{
+  GenAField_eigen(af, gf);
+  GenDeltaField_eigen(df, af, lf);
   ColorMatrix_Eigen *dfEigen = (ColorMatrix_Eigen *)df;
   double *theta;
   theta = (double *)malloc(VOL * sizeof(double));
@@ -177,6 +219,26 @@ double GetFunctional_eigen(ColorMatrix *gf)
   for (int i = 0; i < VOL * Nd; i++)
     func[i] = gfEigen[i].trace().real();
   for (int i = 1; i < VOL * Nd; i++)
+    func[0] += func[i];
+  double funcOut = func[0] / (VOL * Nd * Nc);
+  free(func);
+  return funcOut;
+}
+
+double GetFunctional_eigen(ColorMatrix *gf, ColorMatrix *grf, ColorMatrix *lf)
+{
+  ColorMatrix_Eigen *gfEigen = (ColorMatrix_Eigen *)gf;
+  ColorMatrix_Eigen *grfEigen = (ColorMatrix_Eigen *)grf;
+  ColorMatrix_Eigen *lfEigen = (ColorMatrix_Eigen *)lf;
+  double *func;
+  func = (double *)malloc(VOL * (Nd + 1) * sizeof(double));
+#pragma omp parallel for
+  for (int i = 0; i < VOL * Nd; i++)
+    func[i] = gfEigen[i].trace().real();
+#pragma omp parallel for
+  for (int i = 0; i < VOL; i++)
+    func[i + VOL * Nd] = (grfEigen[i] * lfEigen[i]).trace().imag();
+  for (int i = 1; i < VOL * (Nd + 1); i++)
     func[0] += func[i];
   double funcOut = func[0] / (VOL * Nd * Nc);
   free(func);

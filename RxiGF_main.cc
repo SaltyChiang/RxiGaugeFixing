@@ -5,7 +5,8 @@
 #include "include/RxiGF_io.h"
 #include "include/RxiGF_linalg.h"
 #include "include/RxiGF_linalg_eigen.h"
-#include "include/RxiGF_landau.h"
+#include "include/RxiGF_gfix.h"
+#include "include/RxiGF_lambda.h"
 
 using namespace RxiGF;
 
@@ -14,7 +15,7 @@ ColorMatrix *tempGaugeField;   // tgf
 ColorMatrix *aField;           // af
 ColorMatrix *deltaField;       // df
 ColorMatrix *gaugeRotateField; //grf
-// ColorMatrix *kField; // kf
+ColorMatrix *lambdaField;      // lf
 ColorMatrix *v;
 double *realA;
 double *realB;
@@ -28,26 +29,32 @@ int main(int argc, char *argv[])
   aField = zgfMalloc(ColorMatrix, VOL * Nd);
   deltaField = zgfMalloc(ColorMatrix, VOL);
   gaugeRotateField = zgfMalloc(ColorMatrix, VOL);
-  // kField = zgfMalloc(ColorMatrix, VOL);
+  lambdaField = zgfMalloc(ColorMatrix, VOL);
   v = zgfMalloc(ColorMatrix, VOL * Nd);
   realB = zgfMalloc(double, VOL * 4);
   realA = zgfMalloc(double, VOL * 4);
   r_l = zgfMalloc(double, VOL);
   lbtmp = zgfMalloc(bool, VOL);
   ReadConf(gaugeField, new char[20]{"data/qio.double"});
-  // printMatrix(gaugeField[0]);
-  // printMatrix(gaugeField[VOL * Nd - 1]);
+
+  genLambdaField(lambdaField, 0.1);
 
   // StartTimeChrono(1);
-  double theta1 = GetTheta_eigen(deltaField, aField, gaugeField);
+  double theta1 = GetTheta_eigen(deltaField, aField, gaugeField, lambdaField);
   // StopTimeChrono(1);
   printf("%le\n", theta1);
 
-  LandauGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, 1e-10, 1000, true, 1.7);
+  printMatrix(aField[0]);
+  printMatrix(lambdaField[0]);
+
+  // LandauGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, 1e-10, 100, true, 1.7);
+  RxiGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, lambdaField, 1e-10, 500, false, 1.7);
   // // LandauGaugeSteepest(gaugeField, tempGaugeField, gaugeRotateField, 1e-5, 100);
 
   double theta2 = GetTheta_eigen(deltaField, aField, gaugeField);
   printf("%le\n", theta2);
+  printMatrix(deltaField[0]);
+  printMatrix(lambdaField[0]);
 
   // PrintTimeChrono(1, "Mine");
   return 1;
