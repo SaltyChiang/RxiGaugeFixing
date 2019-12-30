@@ -39,17 +39,17 @@ int main(int argc, char *argv[])
 
   genLambdaField(lambdaField, 0.0);
 
-  // StartTimeChrono(1);
   double theta1 = GetTheta_eigen(deltaField, aField, gaugeField, lambdaField);
   // StopTimeChrono(1);
-  printf("%le\n", theta1);
 
   printMatrix(aField[0]);
   printMatrix(lambdaField[0]);
 
+  // StartTimeChrono(1);
   // LandauGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, 1e-10, 100, true, 1.7);
   RxiGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, lambdaField, 1e-10, 500, true, 1.7);
   // // LandauGaugeSteepest(gaugeField, tempGaugeField, gaugeRotateField, 1e-5, 100);
+  printf("%le\n", theta1);
 
   double theta2 = GetTheta_eigen(deltaField, aField, gaugeField);
   printf("%le\n", theta2);
