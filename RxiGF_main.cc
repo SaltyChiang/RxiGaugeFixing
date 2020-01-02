@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
   lbtmp = zgfMalloc(bool, VOL);
   ReadConf(gaugeField, new char[20]{"data/qio.double"});
 
-  genLambdaField(lambdaField, 0.0);
+  genLambdaField(lambdaField, 0.01);
 
   double theta1 = GetTheta_eigen(deltaField, aField, gaugeField, lambdaField);
   // StopTimeChrono(1);
@@ -47,11 +47,11 @@ int main(int argc, char *argv[])
 
   // StartTimeChrono(1);
   // LandauGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, 1e-10, 100, true, 1.7);
-  RxiGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, lambdaField, 1e-10, 500, true, 1.7);
+  RxiGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, lambdaField, 1e-10, 50000, true, 1.7);
   // // LandauGaugeSteepest(gaugeField, tempGaugeField, gaugeRotateField, 1e-5, 100);
   printf("%le\n", theta1);
 
-  double theta2 = GetTheta_eigen(deltaField, aField, gaugeField);
+  double theta2 = GetTheta_eigen(deltaField, aField, gaugeField, lambdaField);
   printf("%le\n", theta2);
   printMatrix(deltaField[0]);
   printMatrix(lambdaField[0]);

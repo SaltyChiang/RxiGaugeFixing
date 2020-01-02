@@ -12,6 +12,10 @@ ColorMatrix Gell_Mann[8];
 
 void genLambdaField(ColorMatrix *lf, double xi)
 {
+    double testLambda[8];
+    for (int i = 0; i < 8; i++)
+        testLambda[i] = 0.;
+
     Gell_Mann[0] = ColorMatrix::Zero();
     Gell_Mann[0](0, 1) = Eigen::dcomplex(0.5, 0.);
     Gell_Mann[0](1, 0) = Eigen::dcomplex(0.5, 0.);
@@ -59,6 +63,8 @@ void genLambdaField(ColorMatrix *lf, double xi)
             {
                 gaus[j - 1] = cos(2 * PI * rand[j - 1]) * sqrt(-2 * xi * log(1 - rand[j]));
                 gaus[j - 0] = sin(2 * PI * rand[j - 1]) * sqrt(-2 * xi * log(1 - rand[j]));
+                testLambda[j - 1] += gaus[j - 1];
+                testLambda[j - 0] += gaus[j - 0];
                 if (j < (Nc * Nc - 1))
                 {
                     lf[i] += gaus[j - 1] * Gell_Mann[j - 1];
@@ -67,6 +73,9 @@ void genLambdaField(ColorMatrix *lf, double xi)
             }
         }
     }
+    for (int i = 0; i < 8; i++)
+        printf("%le ", testLambda[i]);
+    printf("\n");
 }
 
 } // namespace RxiGF

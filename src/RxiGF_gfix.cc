@@ -64,7 +64,7 @@ int RxiGaugeRelax(ColorMatrix *gf, ColorMatrix *tgf, ColorMatrix *grf, ColorMatr
   funcOld = GetFunctional_eigen(gf, grf, lf);
   double tempTheta;
 
-  while ((res > iterAccu) && iterCount < iterMax)
+  while ((fabs(res) > iterAccu) && iterCount < iterMax)
   {
     iterCount += 1;
 
@@ -86,7 +86,7 @@ int RxiGaugeRelax(ColorMatrix *gf, ColorMatrix *tgf, ColorMatrix *grf, ColorMatr
 
     funcNew = GetFunctional_eigen(tgf, grf, lf);
     /* Normalized convergence criterion: */
-    res = fabs((funcNew - funcOld) / funcNew);
+    res = (funcNew - funcOld) / funcNew;
     funcOld = funcNew;
 
     tempTheta = GetTheta_eigen(deltaField, aField, tgf, lf);
