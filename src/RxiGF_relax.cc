@@ -98,7 +98,7 @@ void gRelax(ColorMatrix *tgf, ColorMatrix *grf, ColorMatrix *lf, int su2_index, 
     v[i] += tgf[i * Nd + 1] + tgf[ym * Nd + 1].adjoint();
     v[i] += tgf[i * Nd + 2] + tgf[zm * Nd + 2].adjoint();
     v[i] += tgf[i * Nd + 3] + tgf[tm * Nd + 3].adjoint();
-    v[i] += Eigen::dcomplex(0., -1.0) * grf[i].adjoint() * lf[i];
+    v[i] += Eigen::dcomplex(0., -1.0) * lf[i];
     // v[i] += Eigen::dcomplex(0., 0.25) * grf[xm].adjoint() * lf[xm];
     // v[i] += Eigen::dcomplex(0., 0.25) * grf[ym].adjoint() * lf[ym];
     // v[i] += Eigen::dcomplex(0., 0.25) * grf[zm].adjoint() * lf[zm];

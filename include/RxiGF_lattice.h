@@ -8,8 +8,8 @@
 
 #define Nc 3
 #define Nd 4
-#define Nt 8
-#define Ns 4
+#define Nt 16
+#define Ns 16
 #define Nx Ns
 #define Ny Ns
 #define Nz Ns

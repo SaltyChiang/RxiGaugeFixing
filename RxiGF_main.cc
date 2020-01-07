@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstdlib>
+#include <random>
 
 #include "include/RxiGF_lattice.h"
 #include "include/RxiGF_io.h"
@@ -14,7 +15,7 @@ ColorMatrix *gaugeField;       // gf
 ColorMatrix *tempGaugeField;   // tgf
 ColorMatrix *aField;           // af
 ColorMatrix *deltaField;       // df
-ColorMatrix *gaugeRotateField; //grf
+ColorMatrix *gaugeRotateField; // grf
 ColorMatrix *lambdaField;      // lf
 ColorMatrix *v;
 double *realA;
@@ -35,9 +36,9 @@ int main(int argc, char *argv[])
   realA = zgfMalloc(double, VOL * 4);
   r_l = zgfMalloc(double, VOL);
   lbtmp = zgfMalloc(bool, VOL);
+  genLambdaField(lambdaField, 1.0);
   ReadConf(gaugeField, new char[20]{"data/qio.double"});
 
-  genLambdaField(lambdaField, 0.01);
 
   double theta1 = GetTheta_eigen(deltaField, aField, gaugeField, lambdaField);
   // StopTimeChrono(1);
@@ -47,7 +48,7 @@ int main(int argc, char *argv[])
 
   // StartTimeChrono(1);
   // LandauGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, 1e-10, 100, true, 1.7);
-  RxiGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, lambdaField, 1e-10, 50000, true, 1.7);
+  RxiGaugeRelax(gaugeField, tempGaugeField, gaugeRotateField, lambdaField, 1e-15, 50000, false, 1.7);
   // // LandauGaugeSteepest(gaugeField, tempGaugeField, gaugeRotateField, 1e-5, 100);
   printf("%le\n", theta1);
 

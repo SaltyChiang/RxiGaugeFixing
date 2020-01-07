@@ -74,4 +74,34 @@ int WriteConf(ColorMatrix *gf, char *fn)
   return 1;
 }
 
-} // namespace RxiGaugeFixing
+int WriteLambda(ColorMatrix *lf, char *fn)
+{
+#ifdef _WIN32
+  FILE *fp;
+  fopen_s(&fp, fn, "wb+");
+#else
+  FILE *fp = fopen(fn, "wb+");
+#endif
+  void *ptr = (void *)lf;
+  fwrite(ptr, sizeof(Complex), VOL * Nd * Nc * Nc, fp);
+
+  fclose(fp);
+  return 1;
+}
+
+int WriteRandom(double *rd, char *fn)
+{
+#ifdef _WIN32
+  FILE *fp;
+  fopen_s(&fp, fn, "wb+");
+#else
+  FILE *fp = fopen(fn, "wb+");
+#endif
+  void *ptr = (void *)rd;
+  fwrite(ptr, sizeof(double), VOL * (Nc * Nc - 1), fp);
+
+  fclose(fp);
+  return 1;
+}
+
+} // namespace RxiGF
