@@ -42,10 +42,6 @@ void genNormalWithSum0(double *result, double xi)
 
 void genLambdaField(ColorMatrix *lf, double xi)
 {
-    double testLambda[8];
-    for (int i = 0; i < 8; i++)
-        testLambda[i] = 0.;
-
     Gell_Mann[0] = ColorMatrix::Zero();
     Gell_Mann[0](0, 1) = Eigen::dcomplex(0.5, 0.);
     Gell_Mann[0](1, 0) = Eigen::dcomplex(0.5, 0.);
