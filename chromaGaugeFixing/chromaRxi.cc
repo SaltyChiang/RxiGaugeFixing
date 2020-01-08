@@ -2,10 +2,10 @@
 #include <cstdlib>
 
 #include "qdp.h"
-#include "qdp_iogauge.h"
 
 using namespace QDP;
 #include "include/coulgauge.h"
+#include "include/kyugauge_io.h"
 #include "include/commio.h"
 
 const int precision = sizeof(double);
@@ -51,12 +51,7 @@ int main(int argc, char *argv[])
   Layout::create();
   multi1d<LatticeColorMatrix> u(Nd);
 
-  ReadConf(u, (char *)"../data/rbc_conf_2464_m0.005_0.04_000495_hyp_rearange");
-  // for (int i = 0; i < Nd; i++)
-  //   gaussian(u[i]);
-  // printMatrix(u[0].elem(0).elem());
-  // printMatrix(u[Nd - 1].elem(Layout::vol() - 1).elem());
-
+  Chroma::readKYU(u, "../data/qio.double");
   Chroma::coulGauge(u, n_gf, Nd, 1e-10, 1000, true, 1.7);
 
   QDP_finalize();
