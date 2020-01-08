@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
   multi1d<LatticeColorMatrix> u(Nd);
 
   Chroma::readKYU(u, "../data/rbc_conf_2464_m0.005_0.04_000495_hyp");
-  Chroma::coulGauge(u, n_gf, Nd, 1e-10, 1000, true, 1.7);
+  Chroma::coulGauge(u, n_gf, Nd, 1e-10, 1000, false, 1.7);
 
   QDP_finalize();
 
