@@ -4,7 +4,7 @@
 # CXXFLAGS = -std=c++14 -O3 -Wall -g -fopenmp
 # LDFLAGS =
 # LIBS =
-CHROMA = /home/irisk/usqcd/chroma-install
+CHROMA = /home/jxyzj/chroma-install
 
 QDP_CONFIG = $(CHROMA)/bin/qdp++-config
 CXX = $(shell $(QDP_CONFIG) --cxx)
