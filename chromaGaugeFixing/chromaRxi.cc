@@ -5,8 +5,9 @@
 
 using namespace QDP;
 #include "include/coulgauge.h"
+#include "include/gauge_io.h"
 #include "include/kyugauge_io.h"
-#include "include/commio.h"
+#include "include/helpfunc.h"
 
 const int precision = sizeof(double);
 
