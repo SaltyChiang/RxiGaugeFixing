@@ -87,7 +87,6 @@ int RxiGaugeRelax(ColorMatrix *gf, ColorMatrix *tgf, ColorMatrix *grf, ColorMatr
     funcNew = GetFunctional_eigen(tgf, grf, lf);
     /* Normalized convergence criterion: */
     res = (funcNew - funcOld) / funcNew;
-    funcOld = funcNew;
 
     tempTheta = GetTheta_eigen(deltaField, aField, tgf, lf);
 
@@ -100,6 +99,7 @@ int RxiGaugeRelax(ColorMatrix *gf, ColorMatrix *tgf, ColorMatrix *grf, ColorMatr
               << "  theta= " << tempTheta
               << "  convar= " << res
               << std::endl;
+    funcOld = funcNew;
   } /* end while loop */
 
   UpdateGaugeField_eigen(gf, grf);

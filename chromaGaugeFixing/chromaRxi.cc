@@ -19,19 +19,19 @@ int ReadConf(multi1d<LatticeColorMatrix> &gf, char *fn)
 
   for (int i = 0; i < Layout::vol(); i++)
   {
-    int t = i / (16 * 16 * 16);
-    int z = i % (16 * 16 * 16) / (16 * 16);
-    int y = i % (16 * 16) / (16);
-    int x = i % (16);
+    int t = i / (24 * 24 * 24);
+    int z = i % (24 * 24 * 24) / (24 * 24);
+    int y = i % (24 * 24) / (24);
+    int x = i % (24);
     int cb = (x + y + z + t) % 2;
     x = x / 2;
-    int ii = t * (16 * 16 * 8) + z * (16 * 8) + y * 8 + x;
+    int ii = t * (24 * 24 * 12) + z * (24 * 12) + y * 12 + x;
     for (int id = 0; id < Nd; id++)
       for (int ic1 = 0; ic1 < Nc; ic1++)
         for (int ic2 = 0; ic2 < Nc; ic2++)
         {
-          gf[id].elem(cb * 32768 + ii).elem().elem(ic1, ic2).real() = ptr[i * Nd * Nc * Nc * 2 + id * Nc * Nc * 2 + ic1 * Nc * 2 + ic2 * 2 + 0];
-          gf[id].elem(cb * 32768 + ii).elem().elem(ic1, ic2).imag() = ptr[i * Nd * Nc * Nc * 2 + id * Nc * Nc * 2 + ic1 * Nc * 2 + ic2 * 2 + 1];
+          gf[id].elem(cb * 64 * 24 * 24 * 12 + ii).elem().elem(ic1, ic2).real() = ptr[i * Nd * Nc * Nc * 2 + id * Nc * Nc * 2 + ic1 * Nc * 2 + ic2 * 2 + 0];
+          gf[id].elem(cb * 64 * 24 * 24 * 12 + ii).elem().elem(ic1, ic2).imag() = ptr[i * Nd * Nc * Nc * 2 + id * Nc * Nc * 2 + ic1 * Nc * 2 + ic2 * 2 + 1];
         }
   }
   fclose(fp);
@@ -45,13 +45,13 @@ int main(int argc, char *argv[])
 
   QDP_initialize(&argc, &argv);
   multi1d<int> nsize(Nd);
-  const int nsize_int[] = {16, 16, 16, 16};
+  const int nsize_int[] = {24, 24, 24, 64};
   nsize = nsize_int;
   Layout::setLattSize(nsize);
   Layout::create();
   multi1d<LatticeColorMatrix> u(Nd);
 
-  ReadConf(u, (char *)"../data/qio.double");
+  ReadConf(u, (char *)"../data/rbc_conf_2464_m0.005_0.04_000495_hyp_rearange");
   // for (int i = 0; i < Nd; i++)
   //   gaussian(u[i]);
   // printMatrix(u[0].elem(0).elem());

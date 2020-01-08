@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
   realA = zgfMalloc(double, VOL * 4);
   r_l = zgfMalloc(double, VOL);
   lbtmp = zgfMalloc(bool, VOL);
-  genLambdaField(lambdaField, 0.1);
+  genLambdaField(lambdaField, 0.0);
   ReadConf(gaugeField, new char[60]{"data/rbc_conf_2464_m0.005_0.04_000495_hyp_rearange"});
 
 
