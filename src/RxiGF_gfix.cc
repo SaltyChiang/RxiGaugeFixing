@@ -58,13 +58,13 @@ int RxiGaugeRelax(ColorMatrix *gf, ColorMatrix *tgf, ColorMatrix *grf, ColorMatr
 {
   int iterCount = 0;
   double res = 1.0;
+  double tempTheta = 1.0;
   double funcOld, funcNew;
 
   InitGaugeRotateField_eigen(grf);
   funcOld = GetFunctional_eigen(gf, grf, lf);
-  double tempTheta;
 
-  while ((fabs(res) > iterAccu) && iterCount < iterMax)
+  while (((fabs(res) > iterAccu) && (tempTheta > iterAccu)) && iterCount < iterMax)
   {
     iterCount += 1;
 
