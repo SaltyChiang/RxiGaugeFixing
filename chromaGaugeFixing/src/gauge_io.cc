@@ -24,9 +24,9 @@ void readGauge(XMLReader &file_xml,
 {
   QDPFileReader to(file_xml, file, serpar);
 
-  /* 
+  /*
    * This is problematic - the size should
-   * come from the read - a resize. Currently, QDPIO does not 
+   * come from the read - a resize. Currently, QDPIO does not
    * support this
    */
 #if 0
@@ -40,7 +40,7 @@ void readGauge(XMLReader &file_xml,
     QDP_abort(1);
   }
 
-#if 0 
+#if 0
   for(int mu=0; mu < u.size(); ++mu)
     u[mu] = u_f[mu];
 #endif
