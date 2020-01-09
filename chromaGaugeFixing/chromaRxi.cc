@@ -1,9 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "qdp.h"
-
-using namespace QDP;
+#include "include/chromabase.h"
 #include "include/coulgauge.h"
 #include "include/gauge_io.h"
 #include "include/kyugauge_io.h"
