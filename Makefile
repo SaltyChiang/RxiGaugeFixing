@@ -31,7 +31,7 @@ clean :
 	+ make $(CLEAN)
 
 clean_linux :
-	rm -rf bin
+	rm -rf bin/*
 
 clean_win32 :
-	rmdir /s /q bin
+	rm bin/*
