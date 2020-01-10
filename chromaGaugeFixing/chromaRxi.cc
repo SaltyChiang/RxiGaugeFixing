@@ -2,7 +2,9 @@
 #include <cstdlib>
 
 #include "include/chromabase.h"
+#include "include/genlambda.h"
 #include "include/coulgauge.h"
+#include "include/rxigauge.h"
 #include "include/gauge_io.h"
 #include "include/kyugauge_io.h"
 #include "include/helpfunc.h"
@@ -45,13 +47,17 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
   multi1d<int> nsize(Nd);
   const int nsize_int[] = {24, 24, 24, 64};
+  const double xi = 0.1;
   nsize = nsize_int;
   Layout::setLattSize(nsize);
   Layout::create();
   multi1d<LatticeColorMatrix> u(Nd);
+  LatticeColorMatrix lambda;
 
+  Chroma::genLambda(lambda, xi);
   Chroma::readKYU(u, "../data/rbc_conf_2464_m0.005_0.04_000495_hyp");
-  Chroma::coulGauge(u, n_gf, Nd, 1e-10, 1000, false, 1.7);
+  // Chroma::coulGauge(u, n_gf, Nd, 1e-10, 1000, false, 1.7);
+  Chroma::rxiGauge(u, lambda, n_gf, Nd, 1e-10, 1000, false, 1.7);
 
   QDP_finalize();
 
