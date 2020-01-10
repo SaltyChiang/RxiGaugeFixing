@@ -210,8 +210,8 @@ void grelax(LatticeColorMatrix &g,
   LatticeColorMatrix v;
   multi1d<LatticeReal> r(4);
   multi1d<LatticeReal> a(4);
-  Complex j(0);
-  j.elem().elem().elem().imag() = 1.0;
+  Complex iImag(0);
+  iImag.elem().elem().elem().imag() = 1.0;
 
   START_CODE();
 
@@ -243,7 +243,7 @@ void grelax(LatticeColorMatrix &g,
       v[rb[cb]] += ug[mu] + adj(u_neg[mu]);
   }
 
-  v[rb[cb]] -= j * lambda;
+  v[rb[cb]] -= iImag * lambda;
 
   if (Nc > 1)
   {
