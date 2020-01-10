@@ -1,12 +1,10 @@
-# CC = clang
-# CXX = clang++
-# CFLAGS = -std=c99 -O3 -Wall -g -fopenmp
-# CXXFLAGS = -std=c++11 -O3 -Wall -g -fopenmp
-# LDFLAGS =
-# LIBS =
-CHROMA = /home/irisk/usqcd/chroma-install
+# CXX = mpicxx
+# CXXFLAGS = -fopenmp -O3 -std=c++11 -Drestrict=__restrict__ -march=native -I$(CHROMA)/include -I/usr/include/libxml2
+# LDFLAGS = -L$(CHROMA)/lib
+# LIBS = -lqdp -lXPathReader -lxmlWriter -lqio -llime -lxml2 -lqmp -lqmp -lfiledb -lfilehash
+QDPXX = $(CHROMA)
 
-QDP_CONFIG = $(CHROMA)/bin/qdp++-config
+QDP_CONFIG = $(QDPXX)/bin/qdp++-config
 CXX = $(shell $(QDP_CONFIG) --cxx)
 CXXFLAGS = $(shell $(QDP_CONFIG) --cxxflags)
 LDFLAGS = $(shell $(QDP_CONFIG) --ldflags)
