@@ -141,7 +141,7 @@ void rxiGauge(multi1d<LatticeColorMatrix> &u,
     tgfold = tgf_s;
   }
 
-  tgfold += sum(imag(trace(g * lambda)));
+  tgfold += sum(imag(trace(g * lambda))) / norm;
 
   // Gauge transf. matrices always start from identity
   g = 1;
@@ -206,7 +206,7 @@ void rxiGauge(multi1d<LatticeColorMatrix> &u,
       tgfnew = tgf_s;
     }
 
-    tgfnew += sum(imag(trace(g * lambda)));
+    tgfnew += sum(imag(trace(g * lambda))) / norm;
 
     if (wrswitch)
       QDPIO::cout << "RXIGAUGE: iter= " << n_gf
