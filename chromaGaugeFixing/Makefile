@@ -15,13 +15,16 @@ all : bin
 
 SRC = $(wildcard src/*.cc)
 OBJ = $(patsubst %.cc, bin/%.o, $(notdir $(SRC)))
-INC = include/chromabase.h include/helpfunc.h
+INC = include/chromabase.h
 
 bin :
 	mkdir $@
 
 $(OBJ) : bin/%.o : src/%.cc include/%.h $(INC)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+chromaRxi.cc : include/helpfunc.h
+	touch chromaRxi.cc
 
 bin/chromagfix.exe : chromaRxi.cc $(OBJ)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBS)
