@@ -7,7 +7,8 @@
 #include "include/rxigauge.h"
 #include "include/gauge_io.h"
 #include "include/kyugauge_io.h"
-#include "include/helpfunc.h"
+
+#include "helpfunc.h"
 
 int main(int argc, char *argv[])
 {
@@ -31,8 +32,8 @@ int main(int argc, char *argv[])
 
   Chroma::genLambda(lambda, parser.xi);
   Chroma::readKYU(u, parser.input);
-  // Chroma::coulGauge(u, n_gf, Nd, gfAccu, gfMax, orDo, orPara);
   Chroma::rxiGauge(u, lambda, n_gf, Nd, parser.gfAccu, parser.gfMax, parser.orDo, parser.orPara);
+  // Chroma::coulGauge(u, n_gf, Nd, parser.gfAccu, parser.gfMax, parser.orDo, parser.orPara);
 
   QDP_finalize();
 
