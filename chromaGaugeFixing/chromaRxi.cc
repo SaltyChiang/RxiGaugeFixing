@@ -13,17 +13,21 @@ int main(int argc, char *argv[])
 {
   std::string inputFile, outputFile;
   int lx, ly, lz, lt;
-  int n_gf = 0;
 
   OptionParser parser(argc, argv);
   inputFile = parser.parseOption('i');
   outputFile = parser.parseOption('o');
-  lx = atoi(parser.parseOption('x'));
-  ly = atoi(parser.parseOption('y'));
-  lz = atoi(parser.parseOption('z'));
-  lt = atoi(parser.parseOption('t'));
-  const double xi = atof(parser.parseOption('r'));
+  lx = atoi(parser.parseOption('x', "24"));
+  ly = atoi(parser.parseOption('y', "24"));
+  lz = atoi(parser.parseOption('z', "24"));
+  lt = atoi(parser.parseOption('t', "64"));
+  const double xi = atof(parser.parseOption('r', "0.0"));
+  const double gfAccu = atof(parser.parseOption('a', "1e-10"));
+  const double gfMax = atoi(parser.parseOption('m', "1000"));
+  const bool orDo = atoi(parser.parseOption('d', "0"));
+  const double orPara = atof(parser.parseOption('p', "1.7"));
 
+  int n_gf = 0;
   QDP_initialize(&argc, &argv);
   multi1d<int> nsize(Nd);
   const int nsize_int[] = {lx, ly, lz, lt};
@@ -35,8 +39,8 @@ int main(int argc, char *argv[])
 
   Chroma::genLambda(lambda, xi);
   Chroma::readKYU(u, inputFile);
-  // Chroma::coulGauge(u, n_gf, Nd, 1e-10, 1000, false, 1.7);
-  Chroma::rxiGauge(u, lambda, n_gf, Nd, 1e-10, 1000, false, 1.7);
+  // Chroma::coulGauge(u, n_gf, Nd, gfAccu, gfMax, orDo, orPara);
+  Chroma::rxiGauge(u, lambda, n_gf, Nd, gfAccu, gfMax, orDo, orPara);
 
   QDP_finalize();
 
