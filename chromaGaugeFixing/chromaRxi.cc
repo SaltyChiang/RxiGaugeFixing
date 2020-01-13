@@ -11,36 +11,28 @@
 
 int main(int argc, char *argv[])
 {
-  std::string inputFile, outputFile;
-  int lx, ly, lz, lt;
-
   OptionParser parser(argc, argv);
-  inputFile = parser.parseOption('i');
-  outputFile = parser.parseOption('o');
-  lx = atoi(parser.parseOption('x', "24"));
-  ly = atoi(parser.parseOption('y', "24"));
-  lz = atoi(parser.parseOption('z', "24"));
-  lt = atoi(parser.parseOption('t', "64"));
-  const double xi = atof(parser.parseOption('r', "0.0"));
-  const double gfAccu = atof(parser.parseOption('a', "1e-10"));
-  const double gfMax = atoi(parser.parseOption('m', "1000"));
-  const bool orDo = atoi(parser.parseOption('d', "0"));
-  const double orPara = atof(parser.parseOption('p', "1.7"));
 
   int n_gf = 0;
   QDP_initialize(&argc, &argv);
   multi1d<int> nsize(Nd);
-  const int nsize_int[] = {lx, ly, lz, lt};
+  const int nsize_int[] = {parser.x, parser.y, parser.z, parser.t};
   nsize = nsize_int;
   Layout::setLattSize(nsize);
   Layout::create();
   multi1d<LatticeColorMatrix> u(Nd);
   LatticeColorMatrix lambda;
 
-  Chroma::genLambda(lambda, xi);
-  Chroma::readKYU(u, inputFile);
+  QDPIO::cout << "xi = " << parser.xi << std::endl
+              << "GFAccu = " << parser.gfAccu << std::endl
+              << "GFMax = " << parser.gfMax << std::endl
+              << "OrDo = " << parser.orDo << std::endl
+              << "OrPara = " << parser.orPara << std::endl;
+
+  Chroma::genLambda(lambda, parser.xi);
+  Chroma::readKYU(u, parser.input);
   // Chroma::coulGauge(u, n_gf, Nd, gfAccu, gfMax, orDo, orPara);
-  Chroma::rxiGauge(u, lambda, n_gf, Nd, gfAccu, gfMax, orDo, orPara);
+  Chroma::rxiGauge(u, lambda, n_gf, Nd, parser.gfAccu, parser.gfMax, parser.orDo, parser.orPara);
 
   QDP_finalize();
 
