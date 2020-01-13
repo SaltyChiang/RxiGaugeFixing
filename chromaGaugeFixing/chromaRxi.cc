@@ -9,45 +9,24 @@
 #include "include/kyugauge_io.h"
 #include "include/helpfunc.h"
 
-const int precision = sizeof(double);
-
-int ReadConf(multi1d<LatticeColorMatrix> &gf, char *fn)
-{
-  FILE *fp = fopen(fn, "rb");
-  double *ptr = (double *)malloc(Layout::vol() * Nd * Nc * Nc * 2 * precision);
-  fread((void *)ptr, 2 * precision, Layout::vol() * Nd * Nc * Nc, fp);
-  // printf("%le\n", ptr[0]);
-
-  for (int i = 0; i < Layout::vol(); i++)
-  {
-    int t = i / (24 * 24 * 24);
-    int z = i % (24 * 24 * 24) / (24 * 24);
-    int y = i % (24 * 24) / (24);
-    int x = i % (24);
-    int cb = (x + y + z + t) % 2;
-    x = x / 2;
-    int ii = t * (24 * 24 * 12) + z * (24 * 12) + y * 12 + x;
-    for (int id = 0; id < Nd; id++)
-      for (int ic1 = 0; ic1 < Nc; ic1++)
-        for (int ic2 = 0; ic2 < Nc; ic2++)
-        {
-          gf[id].elem(cb * 64 * 24 * 24 * 12 + ii).elem().elem(ic1, ic2).real() = ptr[i * Nd * Nc * Nc * 2 + id * Nc * Nc * 2 + ic1 * Nc * 2 + ic2 * 2 + 0];
-          gf[id].elem(cb * 64 * 24 * 24 * 12 + ii).elem().elem(ic1, ic2).imag() = ptr[i * Nd * Nc * Nc * 2 + id * Nc * Nc * 2 + ic1 * Nc * 2 + ic2 * 2 + 1];
-        }
-  }
-  fclose(fp);
-  free(ptr);
-  return 1;
-}
-
 int main(int argc, char *argv[])
 {
+  std::string inputFile, outputFile;
+  int lx, ly, lz, lt;
   int n_gf = 0;
+
+  OptionParser parser(argc, argv);
+  inputFile = parser.parseOption('i');
+  outputFile = parser.parseOption('o');
+  lx = atoi(parser.parseOption('x'));
+  ly = atoi(parser.parseOption('y'));
+  lz = atoi(parser.parseOption('z'));
+  lt = atoi(parser.parseOption('t'));
+  const double xi = atof(parser.parseOption('r'));
 
   QDP_initialize(&argc, &argv);
   multi1d<int> nsize(Nd);
-  const int nsize_int[] = {24, 24, 24, 64};
-  const double xi = 0.1;
+  const int nsize_int[] = {lx, ly, lz, lt};
   nsize = nsize_int;
   Layout::setLattSize(nsize);
   Layout::create();
@@ -55,7 +34,7 @@ int main(int argc, char *argv[])
   LatticeColorMatrix lambda;
 
   Chroma::genLambda(lambda, xi);
-  Chroma::readKYU(u, "../data/rbc_conf_2464_m0.005_0.04_000495_hyp");
+  Chroma::readKYU(u, inputFile);
   // Chroma::coulGauge(u, n_gf, Nd, 1e-10, 1000, false, 1.7);
   Chroma::rxiGauge(u, lambda, n_gf, Nd, 1e-10, 1000, false, 1.7);
 
