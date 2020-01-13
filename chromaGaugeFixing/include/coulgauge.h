@@ -57,6 +57,6 @@ void coulGauge(multi1d<LatticeColorMatrix> &u,
                int j_decay, const Real &GFAccu, int GFMax,
                bool OrDo, const Real &OrPara);
 
-}; // namespace Chroma
+} // namespace Chroma
 
 #endif

@@ -250,4 +250,4 @@ void rxiGauge(multi1d<LatticeColorMatrix> &u,
   END_CODE();
 }
 
-}; // Namespace Chroma
+} // Namespace Chroma

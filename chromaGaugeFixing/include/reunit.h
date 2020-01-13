@@ -26,7 +26,7 @@ namespace Chroma
 namespace ReunitEnv
 {
 extern double getTime();
-};
+}
 
 enum Reunitarize
 {
@@ -86,5 +86,5 @@ void reunit(LatticeColorMatrixD3 &xa,
             enum Reunitarize ruflag,
             const Subset &mstag);
 
-}; // namespace Chroma
+} // namespace Chroma
 #endif
