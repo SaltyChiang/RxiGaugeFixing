@@ -64,8 +64,8 @@ void sunFill(LatticeColorMatrix &dest,
     QDP_abort(1);
   }
 
-  /* 
-     * Insert the b(k) of A_SU(2) = b0 + i sum_k bk sigma_k 
+  /*
+     * Insert the b(k) of A_SU(2) = b0 + i sum_k bk sigma_k
      * back into the SU(N) matrix
      */
   dest[s] = 1.0;
