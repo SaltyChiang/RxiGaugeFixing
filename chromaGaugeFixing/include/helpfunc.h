@@ -29,13 +29,20 @@ public:
     int c = -1;
     while ((c = getopt_long(argc, argv, shortOpts, longOpts, NULL)) != -1)
     {
-      if (c != '?')
+      if (c == 'h')
+      {
+        showHelpInfo();
+      }
+      else if (c == '?')
+      {
+        showHelpInfo();
+        printf("No option named %c.\n", c);
+      }
+      else
       {
         name[c] = true;
         value[c] = optarg;
       }
-      else
-        printf("No option named %c.\n", c);
     }
 
     parseOption('i', input);
@@ -56,17 +63,22 @@ public:
   }
 
 private:
-  const char *shortOpts = "i:o:x:y:z:t:r:f:a:m:d:p:";
-  struct option longOpts[8] = {{"input", 1, NULL, 'i'},
+  const char *shortOpts = "i:o:x:y:z:t:r:f:a:m:d:p:h";
+  struct option longOpts[9] = {{"input", 1, NULL, 'i'},
                                {"output", 1, NULL, 'o'},
                                {"xi", 1, NULL, 'r'},
                                {"format", 1, NULL, 'f'},
                                {"iter-accuracy", 1, NULL, 'a'},
                                {"iter-max", 1, NULL, 'm'},
                                {"overrelax-do", 1, NULL, 'd'},
-                               {"overrelax-param", 1, NULL, 'p'}};
+                               {"overrelax-param", 1, NULL, 'p'},
+                               {"help", 0, NULL, 'h'}};
   bool name[128] = {false};
   char *value[128];
+
+  void showHelpInfo()
+  {
+  }
 
   void parseOption(const int optionId, int &optionValue)
   {
