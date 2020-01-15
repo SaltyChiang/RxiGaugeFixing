@@ -13,7 +13,7 @@ namespace Chroma
 /*!
  * \ingroup gfix
  *
- * Generate a Lambda field, whose Lambda^a ~ i.i.d. N(0, xi) 
+ * Generate a Lambda field, whose Lambda^a ~ i.i.d. N(0, xi)
  * and sum_x(Lambda(x))=0. The field will be used in R_xi
  * gauge fixing iterations.
  *

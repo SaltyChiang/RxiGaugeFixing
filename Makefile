@@ -34,4 +34,4 @@ clean_linux :
 	rm -rf bin/*
 
 clean_win32 :
-	rm bin/*
+	rm -rf bin/*

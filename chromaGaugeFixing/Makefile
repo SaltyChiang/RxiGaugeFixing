@@ -23,7 +23,7 @@ bin :
 $(OBJ) : bin/%.o : src/%.cc include/%.h $(INC)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-chromaRxi.cc : include/helpfunc.h
+chromaRxi.cc : helpfunc.h
 	touch chromaRxi.cc
 
 bin/chromagfix.exe : chromaRxi.cc $(OBJ)
